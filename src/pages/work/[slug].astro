@@ -4,6 +4,7 @@ export const prerender = true;
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Tag from "../../components/Tag.astro";
 import Prose from "../../components/Prose.astro";
+import VideoEmbed from "../../components/VideoEmbed.astro";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
@@ -16,7 +17,7 @@ export async function getStaticPaths() {
 
 const { project } = Astro.props;
 const { Content } = await render(project);
-const { title, summary, tags, year, status, links } = project.data;
+const { title, summary, tags, year, status, links, video } = project.data;
 ---
 
 <BaseLayout title={title} description={summary}>
@@ -55,6 +56,8 @@ const { title, summary, tags, year, status, links } = project.data;
         )
       }
     </header>
+
+    {video && <VideoEmbed url={video} caption={`Demo — ${title}`} />}
 
     <div class="mt-12 border-t border-ink/80 pt-10 sm:mt-16" data-reveal>
       <Prose>

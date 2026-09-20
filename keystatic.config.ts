@@ -53,6 +53,10 @@ export default config({
           defaultValue: "shipped",
         }),
         order: fields.integer({ label: "Sort order", defaultValue: 99 }),
+        video: fields.url({
+          label: "Demo video (YouTube URL)",
+          description: "Embedded at the top of the project page",
+        }),
         links: fields.array(
           fields.object({
             label: fields.text({ label: "Label" }),

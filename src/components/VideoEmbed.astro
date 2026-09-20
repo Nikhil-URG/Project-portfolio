@@ -1,0 +1,33 @@
+---
+interface Props {
+  url: string;
+  caption: string;
+}
+
+const { url, caption } = Astro.props;
+const match = url.match(/(?:youtu\.be\/|[?&]v=|embed\/)([A-Za-z0-9_-]{6,})/);
+const id = match?.[1] ?? null;
+---
+
+{
+  id && (
+    <figure class="mt-10">
+      <div class="border border-line bg-paper-raised/60 p-2 sm:p-3">
+        <div class="relative aspect-video w-full bg-ink/5">
+          <iframe
+            class="absolute inset-0 h-full w-full"
+            src={`https://www.youtube-nocookie.com/embed/${id}`}
+            title={caption}
+            loading="lazy"
+            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          />
+        </div>
+      </div>
+      <figcaption class="mono-label mt-3 flex flex-wrap gap-x-4 text-ink-muted">
+        <span class="text-accent">Video</span>
+        <span>{caption}</span>
+      </figcaption>
+    </figure>
+  )
+}

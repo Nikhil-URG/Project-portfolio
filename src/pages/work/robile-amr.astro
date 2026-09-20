@@ -11,6 +11,7 @@ import AStarGrid from "../../components/casestudy/AStarGrid.astro";
 import PotentialFields from "../../components/casestudy/PotentialFields.astro";
 import Placeholder from "../../components/casestudy/Placeholder.astro";
 import RobotFlow from "../../components/casestudy/RobotFlow";
+import VideoEmbed from "../../components/VideoEmbed.astro";
 
 
 const capabilities = [
@@ -70,8 +71,6 @@ const lessons = [
   "Localization quality bounds everything downstream: if map→odom drifts, no amount of planning discipline saves the run.",
   "Instrument before tuning. Watching the topics — /scan, /map, /tf, /cmd_vel — explained more than any parameter sweep.",
 ];
-
-const placeholder = "— to be published —";
 ---
 
 <BaseLayout
@@ -109,17 +108,20 @@ const placeholder = "— to be published —";
       class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 border-y border-line py-3.5"
       data-reveal
     >
-      <span class="mono-label inline-flex items-center gap-2 border border-dashed border-line-strong px-2.5 py-1.5 text-ink-muted" title="Placeholder — repository link to be added">
-        Repository · {placeholder}
-      </span>
-      <span class="mono-label inline-flex items-center gap-2 border border-dashed border-line-strong px-2.5 py-1.5 text-ink-muted" title="Placeholder — demo/video link to be added">
-        Demo / video · {placeholder}
-      </span>
+      <a href="https://github.com/Nikhil-URG/Autonomous-mobile-robot-project" class="mono-label inline-flex items-center gap-1.5 text-ink-soft transition-colors hover:text-accent">
+        Repository
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M1 9L9 1M9 1H3.5M9 1V6.5" stroke="currentColor" stroke-width="1.1"></path></svg>
+      </a>
       <a href="https://docs.ros.org" class="mono-label inline-flex items-center gap-1.5 text-ink-soft transition-colors hover:text-accent">
         ROS 2 docs
         <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M1 9L9 1M9 1H3.5M9 1V6.5" stroke="currentColor" stroke-width="1.1"></path></svg>
       </a>
     </nav>
+
+    <VideoEmbed
+      url="https://www.youtube.com/watch?v=cXD8E2jGFP0"
+      caption="Path planning, localization & exploration on Robile"
+    />
 
     <!-- 01 PROBLEM -->
     <Section index="01" title="Problem" kicker="The brief" id="problem">

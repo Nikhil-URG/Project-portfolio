@@ -10,6 +10,7 @@ const projects = defineCollection({
     year: z.string().min(1),
     status: z.enum(["active", "shipped", "archived"]).default("shipped"),
     order: z.number().default(99),
+    video: z.string().url().optional(),
     links: z
       .array(z.object({ label: z.string(), href: z.string().url() }))
       .optional(),

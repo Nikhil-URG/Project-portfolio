@@ -37,10 +37,10 @@ export const SYSTEMS: readonly SystemEntry[] = [
     title: "Toyota HSR — Vision & Navigation",
     year: "2025",
     status: "shipped",
-    what: "ROS 2 perception and navigation modules for the Toyota Human Support Robot — SLAM, object detection and manipulation in a distributed system.",
+    what: "ROS perception and navigation modules for the Toyota Human Support Robot — SLAM, object detection and manipulation in a distributed system.",
     problem:
       "A service robot has to know its environment, find objects and act on them. The integration had to hold together across distributed modules — and survive contact with real hardware, not just simulation.",
-    tech: ["ROS 2", "SLAM", "Object detection", "Sensor fusion", "Gazebo"],
+    tech: ["ROS Noetic", "SLAM", "Object detection", "Sensor fusion", "Gazebo"],
     why: "Perception and navigation feeding manipulation is the full service-robot loop, validated in Gazebo and in the real world.",
   },
   {

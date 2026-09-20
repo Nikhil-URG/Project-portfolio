@@ -11,7 +11,7 @@ export const SITE = {
   name: "Nikhil Ravi",
   role: "MSc Autonomous Systems · H-BRS",
   tagline: "Engineering notebook — robotics, vision & learning systems",
-  url: "https://nikhilravi.dev",
+  url: "https://project-portfolio-nikhil-ravi1.vercel.app",
   description:
     "Personal engineering portfolio of Nikhil Ravi — MSc Autonomous Systems student at H-BRS working across robotics, computer vision, machine learning and embedded systems.",
   links: {

@@ -1,0 +1,36 @@
+---
+---
+
+<svg
+  class="block w-full text-ink"
+  viewBox="0 0 720 190"
+  role="img"
+  aria-label="Particle cloud: many weighted pose hypotheses converging on the robot's true pose"
+>
+  {
+    Array.from({ length: 46 }).map((_, i) => {
+      const a = i * 137.5 % 360;
+      const r = 26 + (i * 53 % 74);
+      const x = 300 + Math.cos((a * Math.PI) / 180) * r;
+      const y = 95 + Math.sin((a * Math.PI) / 180) * r * 0.62;
+      return <circle cx={x.toFixed(1)} cy={y.toFixed(1)} r={i % 7 === 0 ? 3 : 2} fill="var(--color-ink)" fill-opacity="0.35" />;
+    })
+  }
+
+  <g transform="translate(300 95)">
+    <line x1="0" y1="0" x2="34" y2="0" stroke="var(--color-accent)" stroke-width="1.5" marker-end="url(#pf-arr)"></line>
+    <circle r="4" fill="var(--color-accent)"></circle>
+  </g>
+
+  <defs>
+    <marker id="pf-arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0 0L7 3.5L0 7" fill="var(--color-accent)"></path>
+    </marker>
+  </defs>
+
+  <g font-family="var(--font-mono)" font-size="9.5" fill="var(--color-ink-muted)">
+    <text x="352" y="52">particle set</text>
+    <text x="352" y="70">~pose hypothesis</text>
+    <text x="300" y="180" text-anchor="middle">weights collapse as scans arrive — odometry propagates, scan matching corrects</text>
+  </g>
+</svg>

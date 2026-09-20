@@ -1,0 +1,65 @@
+---
+export const prerender = true;
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Tag from "../../components/Tag.astro";
+import Prose from "../../components/Prose.astro";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const projects = await getCollection("projects");
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const { title, summary, tags, year, status, links } = project.data;
+---
+
+<BaseLayout title={title} description={summary}>
+  <article>
+    <header class="max-w-(--container-prose)" data-reveal>
+      <p class="mono-label flex flex-wrap items-center gap-3 text-ink-muted">
+        <a href="/work" class="transition-colors hover:text-accent">Work</a>
+        <span aria-hidden="true">/</span>
+        <span class="text-ink-soft">{project.id}</span>
+      </p>
+      <h1 class="mt-6 text-3xl tracking-tight sm:text-display">{title}</h1>
+      <p class="mt-5 text-lg text-ink-soft">{summary}</p>
+      <div class="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
+        <ul class="flex flex-wrap gap-1.5">
+          {tags.map((tag) => <Tag label={tag} />)}
+        </ul>
+        <p class="mono-label text-ink-muted">{year !== "—" ? `${year} · ` : ""}{status}</p>
+      </div>
+      {
+        links && links.length > 0 && (
+          <ul class="mt-6 flex flex-wrap gap-x-6 gap-y-2 border-y border-line py-3">
+            {links.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  class="mono-label inline-flex items-center gap-1.5 text-ink-soft transition-colors hover:text-accent"
+                >
+                  {link.label}
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                    <path d="M1 9L9 1M9 1H3M9 1V7" stroke="currentColor" stroke-width="1.1"></path>
+                  </svg>
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </header>
+
+    <div class="mt-12 border-t border-ink/80 pt-10 sm:mt-16" data-reveal>
+      <Prose>
+        <Content />
+      </Prose>
+    </div>
+  </article>
+</BaseLayout>

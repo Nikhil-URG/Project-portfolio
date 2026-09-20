@@ -1,0 +1,41 @@
+---
+---
+
+<svg
+  class="block w-full text-ink"
+  viewBox="0 0 720 150"
+  role="img"
+  aria-label="Transform tree: map to odom, odom to base_footprint, base_footprint to base_link"
+>
+  <defs>
+    <marker id="tf-arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0 0L7 3.5L0 7" fill="var(--color-ink-muted)"></path>
+    </marker>
+  </defs>
+
+  <g stroke="var(--color-line-strong)" stroke-width="1">
+    <line x1="132" y1="60" x2="222" y2="60" marker-end="url(#tf-arr)"></line>
+    <line x1="324" y1="60" x2="414" y2="60" marker-end="url(#tf-arr)"></line>
+    <line x1="516" y1="60" x2="606" y2="60" marker-end="url(#tf-arr)"></line>
+  </g>
+
+  <g font-family="var(--font-mono)" font-size="12" fill="var(--color-ink)" text-anchor="middle" font-weight="600">
+    <text x="72" y="64">map</text>
+    <text x="273" y="64">odom</text>
+    <text x="465" y="64">base_footprint</text>
+    <text x="672" y="64">base_link</text>
+  </g>
+
+  <g font-family="var(--font-mono)" font-size="9.5" fill="var(--color-ink-muted)" text-anchor="middle">
+    <text x="177" y="90">localization</text>
+    <text x="369" y="90">odometry</text>
+    <text x="561" y="90">robot model</text>
+  </g>
+
+  <g font-family="var(--font-mono)" font-size="9.5" fill="var(--color-ink-muted)" text-anchor="middle">
+    <text x="72" y="34">global frame</text>
+    <text x="273" y="34">smooth, drifts</text>
+    <text x="465" y="34">on the ground</text>
+    <text x="672" y="34">robot frame</text>
+  </g>
+</svg>

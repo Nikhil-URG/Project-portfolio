@@ -1,0 +1,72 @@
+---
+/**
+ * Instrument panel: a sensor sweep over a bounded field.
+ * The scan line traverses the region; targets flash when detected.
+ */
+---
+
+<div class="blueprint relative border border-line-strong/80">
+  <div class="flex items-center justify-between border-b border-line px-4 py-2.5">
+    <p class="mono-label text-ink-soft">Field / 01</p>
+    <p class="mono-label flex items-center gap-2 text-ink-muted">
+      <span class="inline-block h-1.5 w-1.5 bg-accent [animation:rec-blink_2.2s_ease-in-out_infinite]" aria-hidden="true"></span>
+      Scan 15 Hz
+    </p>
+  </div>
+
+  <svg
+    class="block w-full text-ink"
+    viewBox="0 0 320 220"
+    role="img"
+    aria-label="Schematic of a sensor scanning a field and detecting targets"
+  >
+    <g stroke="currentColor" stroke-opacity="0.25" stroke-width="0.5">
+      <line x1="16" y1="22" x2="16" y2="198"></line>
+      <line x1="64" y1="22" x2="64" y2="198"></line>
+      <line x1="112" y1="22" x2="112" y2="198"></line>
+      <line x1="160" y1="22" x2="160" y2="198"></line>
+      <line x1="208" y1="22" x2="208" y2="198"></line>
+      <line x1="256" y1="22" x2="256" y2="198"></line>
+      <line x1="304" y1="22" x2="304" y2="198"></line>
+    </g>
+
+    <rect x="80" y="66" width="10" height="10" class="target" style="animation-delay: 2.4s" fill="none" stroke="currentColor" stroke-width="1"></rect>
+    <rect x="208" y="116" width="10" height="10" class="target" style="animation-delay: 5.1s" fill="none" stroke="currentColor" stroke-width="1"></rect>
+    <rect x="140" y="164" width="10" height="10" class="target" style="animation-delay: 7.5s" fill="none" stroke="currentColor" stroke-width="1"></rect>
+
+    <g class="scan-line">
+      <line x1="16" y1="0" x2="304" y2="0" stroke="var(--color-accent)" stroke-width="1"></line>
+      <line x1="16" y1="2.5" x2="304" y2="2.5" stroke="var(--color-accent)" stroke-opacity="0.35" stroke-width="0.5"></line>
+    </g>
+
+    <g stroke="currentColor" stroke-opacity="0.4" stroke-width="0.75">
+      <line x1="16" y1="204" x2="16" y2="210"></line>
+      <line x1="40" y1="204" x2="40" y2="208"></line>
+      <line x1="64" y1="204" x2="64" y2="210"></line>
+      <line x1="88" y1="204" x2="88" y2="208"></line>
+      <line x1="112" y1="204" x2="112" y2="210"></line>
+      <line x1="136" y1="204" x2="136" y2="208"></line>
+      <line x1="160" y1="204" x2="160" y2="210"></line>
+      <line x1="184" y1="204" x2="184" y2="208"></line>
+      <line x1="208" y1="204" x2="208" y2="210"></line>
+      <line x1="232" y1="204" x2="232" y2="208"></line>
+      <line x1="256" y1="204" x2="256" y2="210"></line>
+      <line x1="280" y1="204" x2="280" y2="208"></line>
+      <line x1="304" y1="204" x2="304" y2="210"></line>
+    </g>
+  </svg>
+
+  <div class="flex items-center justify-between border-t border-line px-4 py-2.5">
+    <p class="mono-data text-ink-muted">N 50.73° E 7.10°</p>
+    <p class="mono-data text-ink-muted">3 contacts</p>
+  </div>
+</div>
+
+<style>
+  .target {
+    animation: target-flash 9s linear infinite;
+  }
+  .scan-line {
+    animation: scan-sweep 9s linear infinite;
+  }
+</style>

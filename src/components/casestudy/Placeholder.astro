@@ -1,0 +1,15 @@
+---
+interface Props {
+  label: string;
+}
+const { label } = Astro.props;
+---
+
+<span
+  class="mono-label inline-flex items-center gap-2 border border-dashed border-line-strong px-2 py-1 text-ink-muted"
+>
+  <svg width="8" height="8" viewBox="0 0 8 8" fill="none" aria-hidden="true">
+    <path d="M4 0V8M0 4H8" stroke="currentColor" stroke-width="0.9"></path>
+  </svg>
+  {label}
+</span>

@@ -1,0 +1,25 @@
+---
+export const prerender = true;
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="404 — Not found">
+  <section class="relative flex min-h-[62vh] items-center py-20">
+    <div class="blueprint pointer-events-none absolute inset-0 opacity-40" aria-hidden="true"></div>
+    <div class="relative">
+      <p class="mono-label text-accent">Error 404</p>
+      <h1 class="mt-5 text-4xl tracking-tight sm:text-display">Off the map.</h1>
+      <p class="mt-5 max-w-prose text-lg text-ink-soft">
+        No entry exists at this route — the localization estimate must have
+        drifted. Try returning to the origin.
+      </p>
+      <a href="/" class="mono-label mt-10 inline-flex items-center gap-2 border border-ink px-4 py-2.5 text-ink transition-colors hover:bg-ink hover:text-paper">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M14 8H3M3 8L7.5 3.5M3 8L7.5 12.5" stroke="currentColor" stroke-width="1.25"></path>
+        </svg>
+        Return to origin
+      </a>
+    </div>
+  </section>
+</BaseLayout>

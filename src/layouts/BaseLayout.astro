@@ -1,0 +1,82 @@
+---
+import "../styles/global.css";
+import "@fontsource-variable/space-grotesk";
+import "@fontsource-variable/source-serif-4";
+import "@fontsource-variable/jetbrains-mono";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import { SITE } from "../consts";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description = SITE.description } = Astro.props;
+const pageTitle = title
+  ? `${title} — ${SITE.name}`
+  : `${SITE.name} — ${SITE.tagline}`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f6f4ee" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:image" content={`${SITE.url}/og.png`} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={`${SITE.url}/og.png`} />
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <script is:inline>
+      document.documentElement.classList.add("js-reveal");
+    </script>
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-ink focus:px-3 focus:py-1.5 focus:text-paper"
+    >
+      Skip to content
+    </a>
+    <Nav />
+    <main
+      id="main"
+      class="mx-auto w-full max-w-(--container-page) flex-1 px-5 pt-14 sm:px-8 sm:pt-20"
+    >
+      <slot />
+    </main>
+    <Footer />
+
+    <script>
+      const els = document.querySelectorAll("[data-reveal]");
+      const reduced = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      if (reduced) {
+        els.forEach((el) => el.classList.add("is-in"));
+      } else {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("is-in");
+                io.unobserve(entry.target);
+              }
+            }
+          },
+          { threshold: 0.1, rootMargin: "0px 0px -6% 0px" },
+        );
+        els.forEach((el) => io.observe(el));
+      }
+    </script>  </body>
+</html>

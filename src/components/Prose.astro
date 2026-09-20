@@ -1,0 +1,27 @@
+---
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<div
+  class:list={[
+    "max-w-(--container-prose)",
+    "[&>p]:mt-5 [&>p]:text-base [&>p]:leading-relaxed [&>p]:text-ink-soft [&>p:first-of-type]:text-lg [&>p:first-of-type]:text-ink",
+    "[&>h2]:mt-12 [&>h2]:text-2xl [&>h2]:tracking-tight [&>h2]:text-ink [&>h2]:sm:text-3xl",
+    "[&>h3]:mt-8 [&>h3]:mono-label [&>h3]:text-ink",
+    "[&>ul]:mt-5 [&>ul]:list-none [&>ul>li]:relative [&>ul>li]:mt-2 [&>ul>li]:pl-5 [&>ul>li]:text-ink-soft",
+    "[&>ul>li]:before:absolute [&>ul>li]:before:left-0 [&>ul>li]:before:top-2.5 [&>ul>li]:before:h-px [&>ul>li]:before:w-3 [&>ul>li]:before:bg-accent",
+    "[&>ol]:mt-5 [&>ol]:list-decimal [&>ol]:pl-6 [&>ol>li]:mt-2 [&>ol>li]:text-ink-soft",
+    "[&>a]:text-accent [&>a]:underline [&>a]:underline-offset-2 hover:[&>a]:text-accent-ink",
+    "[&>blockquote]:my-6 [&>blockquote]:border-l-2 [&>blockquote]:border-accent [&>blockquote]:py-1 [&>blockquote]:pl-5 [&>blockquote]:font-display [&>blockquote]:text-lg [&>blockquote]:text-ink",
+    "[&>pre]:mt-6 [&>pre]:overflow-x-auto [&>pre]:border [&>pre]:border-line [&>pre]:bg-paper-raised [&>pre]:p-4 [&>pre]:mono-data [&>pre]:text-ink-soft",
+    "[&>code]:mono-data [&>code]:bg-paper-raised [&>code]:px-1 [&>code]:py-0.5",
+    "[&>pre>code]:bg-transparent [&>pre>code]:p-0",
+    "[&>hr]:my-10 [&>hr]:border-line",
+    className,
+  ]}
+>
+  <slot />
+</div>

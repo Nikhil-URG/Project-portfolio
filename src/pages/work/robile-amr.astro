@@ -1,0 +1,345 @@
+---
+export const prerender = true;
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Section from "../../components/Section.astro";
+import Tag from "../../components/Tag.astro";
+import Figure from "../../components/Figure.astro";
+import TFTree from "../../components/casestudy/TFTree.astro";
+import ParticleCloud from "../../components/casestudy/ParticleCloud.astro";
+import AStarGrid from "../../components/casestudy/AStarGrid.astro";
+import PotentialFields from "../../components/casestudy/PotentialFields.astro";
+import Placeholder from "../../components/casestudy/Placeholder.astro";
+import RobotFlow from "../../components/casestudy/RobotFlow";
+
+
+const capabilities = [
+  {
+    n: "01",
+    title: "Map the unknown",
+    body: "Build an occupancy grid from LiDAR scans while driving through an indoor environment for the first time.",
+  },
+  {
+    n: "02",
+    title: "Know where you are",
+    body: "Estimate the robot's pose inside that map continuously — with wheel odometry drifting and scans correcting.",
+  },
+  {
+    n: "03",
+    title: "Get somewhere new",
+    body: "Plan a globally valid path to a goal pose, then follow it while reacting to things the global plan can't see.",
+  },
+  {
+    n: "04",
+    title: "Close the loop",
+    body: "Turn all of the above into velocity commands the base can execute — at a rate fast enough to be safe.",
+  },
+];
+
+const results = [
+  {
+    metric: "End-to-end autonomy loop",
+    value: "Runs on the platform: sense → map → localize → plan → act, in indoor test scenes.",
+    pending: false,
+  },
+  {
+    metric: "Simulation evaluation",
+    value: "Path planning and obstacle avoidance evaluated quantitatively in Gazebo before hardware runs; numbers to be published.",
+    pending: false,
+  },
+  {
+    metric: "Map quality",
+    value: null,
+    note: "to be filled with measured values",
+  },
+  {
+    metric: "Localization stability",
+    value: null,
+    note: "to be filled with measured values",
+  },
+  {
+    metric: "Exploration coverage",
+    value: null,
+    note: "to be filled with measured values",
+  },
+];
+
+const lessons = [
+  "The transform tree is the real API. Most integration time went into TF — making frames agree, not making planners smarter.",
+  "A globally optimal path is not a locally comfortable one. The potential-field controller needed its own tuning pass per environment.",
+  "Localization quality bounds everything downstream: if map→odom drifts, no amount of planning discipline saves the run.",
+  "Instrument before tuning. Watching the topics — /scan, /map, /tf, /cmd_vel — explained more than any parameter sweep.",
+];
+
+const placeholder = "— to be published —";
+---
+
+<BaseLayout
+  title="Robile AMR"
+  description="Case study: ROS 2 autonomous navigation — SLAM, particle-filter localization, A*/Dijkstra planning, potential-field control, evaluated in Gazebo and on hardware."
+>
+  <article>
+    <header class="max-w-(--container-prose)">
+      <p class="mono-label flex flex-wrap items-center gap-3 text-ink-muted">
+        <a href="/work" class="transition-colors hover:text-accent">Work</a>
+        <span aria-hidden="true">/</span>
+        <span class="text-ink-soft">robile-amr</span>
+      </p>
+      <h1 class="mt-6 text-3xl tracking-tight sm:text-display" data-reveal>Robile AMR</h1>
+      <p class="mt-5 text-lg text-ink-soft" data-reveal>
+        A ROS 2 autonomous navigation stack on the Robile mobile robot —
+        mapping, localizing and navigating indoor space on its own.
+      </p>
+      <div class="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3" data-reveal>
+        <ul class="flex flex-wrap gap-1.5">
+          <li><Tag label="ROS 2" /></li>
+          <li><Tag label="SLAM" /></li>
+          <li><Tag label="Localization" /></li>
+          <li><Tag label="A* / Dijkstra" /></li>
+          <li><Tag label="Potential fields" /></li>
+          <li><Tag label="Sensor fusion" /></li>
+          <li><Tag label="Gazebo" /></li>
+        </ul>
+        <p class="mono-label text-ink-muted">case study · 2025</p>
+      </div>
+    </header>
+
+    <nav
+      aria-label="Case study resources"
+      class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 border-y border-line py-3.5"
+      data-reveal
+    >
+      <span class="mono-label inline-flex items-center gap-2 border border-dashed border-line-strong px-2.5 py-1.5 text-ink-muted" title="Placeholder — repository link to be added">
+        Repository · {placeholder}
+      </span>
+      <span class="mono-label inline-flex items-center gap-2 border border-dashed border-line-strong px-2.5 py-1.5 text-ink-muted" title="Placeholder — demo/video link to be added">
+        Demo / video · {placeholder}
+      </span>
+      <a href="https://docs.ros.org" class="mono-label inline-flex items-center gap-1.5 text-ink-soft transition-colors hover:text-accent">
+        ROS 2 docs
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M1 9L9 1M9 1H3.5M9 1V6.5" stroke="currentColor" stroke-width="1.1"></path></svg>
+      </a>
+    </nav>
+
+    <!-- 01 PROBLEM -->
+    <Section index="01" title="Problem" kicker="The brief" id="problem">
+      <div class="max-w-prose">
+        <p class="text-lg text-ink" data-reveal>
+          Put a robot in a room it has never seen. It should end up with a
+          map, a persistent answer to "where am I?", and the ability to
+          navigate to goals without a human in the loop.
+        </p>
+        <p class="mt-4 text-ink-soft" data-reveal>
+          That decomposes into four capabilities that all have to hold at
+          once — each one is a subsystem, and each one depends on the ones
+          before it:
+        </p>
+      </div>
+      <ol class="mt-10 grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2" data-reveal>
+        {
+          capabilities.map((c) => (
+            <li class="flex gap-4 border-t border-line pt-4">
+              <span class="mono-label pt-0.5 text-accent">{c.n}</span>
+              <div>
+                <h3 class="text-base tracking-tight sm:text-lg">{c.title}</h3>
+                <p class="mt-1.5 text-sm text-ink-soft">{c.body}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </Section>
+
+    <!-- 02 SYSTEM -->
+    <Section index="02" title="System" kicker="ROS 2 graph" id="system">
+      <div class="max-w-prose">
+        <p class="text-ink-soft" data-reveal>
+          The stack is a ROS 2 graph: every capability is a node speaking
+          over topics, and the whole pipeline is literally the flow of
+          messages from sensor to actuator.
+        </p>
+        <p class="mt-4 text-sm text-ink-soft" data-reveal>
+          Mapping and localization are two phases of the same loop. While
+          the map is being built, SLAM owns the map → odom transform; once a
+          map exists, the particle filter localizes against it. The diagram
+          shows both paths — they alternate rather than run at once.
+        </p>
+      </div>
+      <div class="mt-8" data-reveal>
+        <RobotFlow client:visible />
+      </div>
+    </Section>
+
+    <!-- 03 PERCEPTION -->
+    <Section index="03" title="Perception" kicker="/scan → /map" id="perception">
+      <div class="grid grid-cols-1 gap-x-10 gap-y-8 lg:grid-cols-12">
+        <div class="max-w-prose lg:col-span-5">
+          <p class="text-ink-soft" data-reveal>
+            Everything starts on <code class="mono-data bg-paper-raised px-1 py-0.5 text-ink">/scan</code> —
+            a stream of range readings sweeping the environment. SLAM turns
+            the sequence of scans and odometry into an occupancy grid
+            published on <code class="mono-data bg-paper-raised px-1 py-0.5 text-ink">/map</code>:
+            one cell map that the rest of the stack treats as ground truth
+            about geometry.
+          </p>
+          <p class="mt-4 text-sm text-ink-soft" data-reveal>
+            During exploration the same pipeline runs without a goal map —
+            frontiers between known and unknown cells are what the robot
+            drives toward.
+          </p>
+        </div>
+        <div class="lg:col-span-7">
+          <Figure index="02" caption="laser scan → occupancy grid (schematic)">
+            <svg class="block w-full text-ink" viewBox="0 0 600 190" role="img" aria-label="LiDAR rays sweeping and hitting walls; ranges populate grid cells">
+              <g stroke="var(--color-line-strong)" stroke-width="0.75">
+                {Array.from({ length: 13 }).map((_, i) => (
+                  <line x1="80" y1="95" x2={80 + 120 + i * 6} y2={95 - 62 + i * 10} />
+                ))}
+              </g>
+              <polyline
+                points="193,33 211,37 229,47 247,47 265,43 283,53 301,63 319,57 337,73 355,83 373,93 391,103 409,113 427,123 445,133 463,143 481,143 499,139 517,145"
+                fill="none"
+                stroke="var(--color-ink)"
+                stroke-width="1.5"
+              ></polyline>
+              <rect x="76" y="91" width="8" height="8" fill="var(--color-accent)"></rect>
+              <line x1="80" y1="95" x2="207" y2="38" stroke="var(--color-accent)" stroke-width="1.5"></line>
+              <g font-family="var(--font-mono)" font-size="9.5" fill="var(--color-ink-muted)">
+                <text x="60" y="86" text-anchor="end">origin</text>
+                <text x="216" y="30">range d₁</text>
+                <text x="300" y="172" text-anchor="middle">each hit populates a grid cell — occupancy builds as the robot moves</text>
+              </g>
+            </svg>
+          </Figure>
+        </div>
+      </div>
+    </Section>
+
+    <!-- 04 LOCALIZATION -->
+    <Section index="04" title="Localization" kicker="particle filter" id="localization">
+      <div class="grid grid-cols-1 gap-x-10 gap-y-8 lg:grid-cols-12">
+        <div class="max-w-prose lg:col-span-5">
+          <p class="text-ink-soft" data-reveal>
+            Odometry alone drifts; the particle filter keeps the map frame
+            honest by fusing both signals. A cloud of weighted pose
+            hypotheses is propagated by odometry and re-weighted against
+            each incoming scan — low probability particles die, good ones
+            reproduce. The surviving cloud's average is the pose estimate,
+            published as the
+            <code class="mono-data bg-paper-raised px-1 py-0.5 text-ink">map → odom</code>
+            transform.
+          </p>
+          <p class="mt-4 text-sm text-ink-soft" data-reveal>
+            That single transform is the seam between two worlds:
+            <code class="mono-data bg-paper-raised px-1 py-0.5 text-ink">odom</code>
+            is smooth but drifts,
+            <code class="mono-data bg-paper-raised px-1 py-0.5 text-ink">map</code>
+            is true but only as good as localization.
+          </p>
+        </div>
+        <div class="lg:col-span-7">
+          <Figure index="03" caption="particle set collapsing onto the pose hypothesis">
+            <ParticleCloud />
+          </Figure>
+        </div>
+      </div>
+
+      <div class="mt-10" data-reveal>
+        <Figure index="04" caption="the transform tree every consumer resolves through">
+          <TFTree />
+        </Figure>
+      </div>
+    </Section>
+
+    <!-- 05 PLANNING -->
+    <Section index="05" title="Planning" kicker="global · A*" id="planning">
+      <div class="grid grid-cols-1 gap-x-10 gap-y-8 lg:grid-cols-12">
+        <div class="max-w-prose lg:col-span-5">
+          <p class="text-ink-soft" data-reveal>
+            The global planner searches the occupancy grid for a route:
+            A* with its heuristic for speed, Dijkstra as the uninformed
+            baseline to compare against. The result is a
+            <code class="mono-data bg-paper-raised px-1 py-0.5 text-ink">nav_msgs/Path</code> —
+            a sequence of poses the controller follows and re-evaluates
+            against the live map.
+          </p>
+          <p class="mt-4 text-sm text-ink-soft" data-reveal>
+            A* only guarantees the global picture. Whether the robot can
+            actually fly that path through real obstacles is the local
+            controller's problem.
+          </p>
+        </div>
+        <div class="lg:col-span-7">
+          <Figure index="05" caption="A* over a grid — expanded cells and the winning path (illustrative)">
+            <AStarGrid />
+          </Figure>
+        </div>
+      </div>
+    </Section>
+
+    <!-- 06 CONTROL -->
+    <Section index="06" title="Control" kicker="potential fields → /cmd_vel" id="control">
+      <div class="grid grid-cols-1 gap-x-10 gap-y-8 lg:grid-cols-12">
+        <div class="max-w-prose lg:col-span-5">
+          <p class="text-ink-soft" data-reveal>
+            Local control is potential fields: an attractive force toward
+            the next path point, a repulsive field around anything the
+            sensors say is close. Sum the vectors, and the robot steers
+            itself around surprises without replanning. The output is a
+            <code class="mono-data bg-paper-raised px-1 py-0.5 text-ink">geometry_msgs/Twist</code>
+            on <code class="mono-data bg-paper-raised px-1 py-0.5 text-ink">/cmd_vel</code> —
+            the only channel that touches the motors.
+          </p>
+        </div>
+        <div class="lg:col-span-7">
+          <Figure index="06" caption="vector composition in the local controller (schematic)">
+            <PotentialFields />
+          </Figure>
+        </div>
+      </div>
+    </Section>
+
+    <!-- 07 RESULTS -->
+    <Section index="07" title="Results" kicker="qualitative" id="results">
+      <div class="max-w-prose">
+        <p class="text-ink-soft" data-reveal>
+          Qualitative status first; the measured table gets filled in as
+          benchmarks are run. Nothing here is invented.
+        </p>
+      </div>
+      <dl class="mt-8" data-reveal>
+        {
+          results.map((r) => (
+            <div class="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 border-t border-line py-3.5 last:border-b">
+              <dt class="mono-label w-56 shrink-0 text-ink-muted">{r.metric}</dt>
+              {r.pending ? (
+                <dd>
+                  <Placeholder label={r.note ?? "pending"} />
+                </dd>
+              ) : (
+                <dd class="mono-data max-w-prose text-ink">{r.value}</dd>
+              )}
+            </div>
+          ))
+        }
+      </dl>
+      <p class="mt-5" data-reveal>
+        <Placeholder label="screenshots & rosbag excerpts — to be added" />
+      </p>
+    </Section>
+
+    <!-- 08 LESSONS -->
+    <Section index="08" title="Lessons" kicker="notebook margins" id="lessons">
+      <ol class="grid max-w-prose gap-6" data-reveal>
+        {
+          lessons.map((lesson, i) => (
+            <li class="flex gap-4 border-t border-line pt-4">
+              <span class="mono-label pt-1 text-accent">{String(i + 1).padStart(2, "0")}</span>
+              <p class="font-body text-base text-ink-soft">{lesson}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </Section>
+  </article>
+</BaseLayout>

@@ -1,0 +1,54 @@
+---
+---
+
+<svg
+  class="block w-full text-ink"
+  viewBox="0 0 720 240"
+  role="img"
+  aria-label="Real-world execution loop: observations feed the ACT policy, chunks queue to the follower, the workspace responds"
+>
+  <defs>
+    <marker id="el-arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0 0L7 3.5L0 7" fill="var(--color-ink-muted)"></path>
+    </marker>
+  </defs>
+
+  <g fill="var(--color-paper)" stroke="var(--color-line-strong)" stroke-width="1">
+    <rect x="40" y="36" width="130" height="40"></rect>
+    <rect x="300" y="36" width="140" height="40" stroke="var(--color-accent)" stroke-width="1.25" stroke-dasharray="4 3"></rect>
+    <rect x="530" y="36" width="150" height="40"></rect>
+    <rect x="530" y="150" width="150" height="40"></rect>
+    <rect x="250" y="150" width="190" height="40"></rect>
+  </g>
+
+  <g font-family="var(--font-mono)" font-size="10" fill="var(--color-ink)">
+    <text x="52" y="60">camera obs</text>
+    <text x="312" y="60">ACT policy</text>
+    <text x="542" y="60">action chunk</text>
+    <text x="542" y="174">follower arm</text>
+    <text x="262" y="174">workspace</text>
+  </g>
+
+  <g stroke="var(--color-ink-muted)" stroke-width="1" fill="none" marker-end="url(#el-arr)">
+    <line x1="170" y1="56" x2="296" y2="56"></line>
+    <line x1="440" y1="56" x2="526" y2="56"></line>
+    <line x1="605" y1="76" x2="605" y2="146"></line>
+    <line x1="526" y1="170" x2="444" y2="170"></line>
+    <path d="M250 170 L105 170 L105 80"></path>
+  </g>
+
+  <g font-family="var(--font-mono)" font-size="9" fill="var(--color-ink-muted)">
+    <text x="170" y="50">synchronized</text>
+    <text x="452" y="50">chunk of Δ steps</text>
+    <text x="614" y="104">queued step-by-step</text>
+    <text x="110" y="134" text-anchor="middle">next observation</text>
+  </g>
+
+  <text x="360" y="226" font-family="var(--font-mono)" font-size="9" fill="var(--color-accent-ink)" text-anchor="middle">
+    drift detected? — operator intervenes, episode marked
+  </text>
+
+  <text x="40" y="26" font-family="var(--font-mono)" font-size="9.5" fill="var(--color-ink-muted)">
+    the learned loop — no operator in it
+  </text>
+</svg>

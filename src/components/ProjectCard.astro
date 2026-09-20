@@ -1,0 +1,63 @@
+---
+import Tag from "./Tag.astro";
+
+export interface ProjectEntry {
+  id: string;
+  data: {
+    title: string;
+    summary: string;
+    tags: string[];
+    year: string;
+    status: "active" | "shipped" | "archived";
+    links?: { label: string; href: string }[];
+  };
+}
+
+interface Props {
+  project: ProjectEntry;
+  index: number;
+}
+
+const { project, index } = Astro.props;
+const { title, summary, tags, year, status } = project.data;
+const num = String(index).padStart(2, "0");
+---
+
+<article class="group relative border-t border-line py-7 sm:py-8">
+  <a
+    href={`/work/${project.id}`}
+    class="absolute inset-0"
+    aria-label={`View project: ${title}`}
+  >
+  </a>
+  <div class="grid gap-x-8 gap-y-3 sm:grid-cols-[3.5rem_1fr_auto]">
+    <span class="mono-label pt-1.5 text-ink-muted transition-colors duration-200 group-hover:text-accent">
+      {num}
+    </span>
+    <div>
+      <h3 class="text-xl tracking-tight sm:text-2xl">
+        <span class="transition-colors duration-200 group-hover:text-accent">
+          {title}
+        </span>
+      </h3>
+      <p class="mt-2 max-w-prose text-sm text-ink-soft sm:text-base">
+        {summary}
+      </p>
+      <ul class="mt-4 flex flex-wrap gap-1.5">
+        {tags.map((tag) => <Tag label={tag} />)}
+      </ul>
+    </div>
+    <div class="flex items-baseline gap-4 sm:flex-col sm:items-end sm:gap-1">
+      {year !== "—" && <span class="mono-label text-ink-muted">{year}</span>}
+      <span class:list={["mono-label", status === "active" ? "text-accent" : "text-ink-soft"]}>
+        {status}
+      </span>
+      <svg
+        class="h-4 w-4 self-center text-ink-muted opacity-0 transition-all duration-200 group-hover:translate-x-0.5 group-hover:opacity-100 max-sm:hidden sm:mt-3"
+        width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"
+      >
+        <path d="M2 8H13M13 8L8.5 3.5M13 8L8.5 12.5" stroke="currentColor" stroke-width="1.25"></path>
+      </svg>
+    </div>
+  </div>
+</article>

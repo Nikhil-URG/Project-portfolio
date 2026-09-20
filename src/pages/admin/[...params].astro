@@ -1,0 +1,62 @@
+---
+import { Keystatic } from "../../components/keystatic-page";
+
+const error = Astro.url.searchParams.get("error");
+const hasSession = Boolean(Astro.cookies.get("keystatic-session"));
+
+const errorMessages: Record<string, string> = {
+  "not-authorized": "That GitHub account is not authorized to edit this site.",
+  unauthenticated: "Please sign in to access the admin area.",
+  oauth: "GitHub sign-in failed. Please try again.",
+  github: "Could not verify your GitHub account. Please try again.",
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin — Nikhil Ravi</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body class="bg-paper text-ink font-sans antialiased">
+    {
+      hasSession ? (
+        <Keystatic client:only="react" />
+      ) : (
+        <main class="flex min-h-screen flex-col items-center justify-center px-5">
+          <div class="w-full max-w-sm border border-line bg-paper-raised p-8">
+            <p class="mono-label text-accent">Restricted</p>
+            <h1 class="mt-3 font-serif text-2xl tracking-tight">Site admin</h1>
+            {error && (
+              <p class="mt-3 border-l-2 border-accent pl-3 text-sm text-accent-ink">
+                {errorMessages[error] ?? "Something went wrong."}
+              </p>
+            )}
+            <p class="mt-4 text-sm text-ink-soft">
+              Sign in with the authorized GitHub account to edit projects and
+              content. Changes are committed to the repository and deployed
+              automatically.
+            </p>
+            <a
+              href="/api/keystatic/created-login"
+              class="mt-6 inline-flex w-full items-center justify-center bg-ink px-4 py-2.5 font-mono text-sm text-paper transition-colors hover:bg-accent-ink"
+            >
+              Sign in with GitHub →
+            </a>
+          </div>
+        </main>
+      )
+    }
+  </body>
+</html>
+
+<style>
+  .mono-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+</style>

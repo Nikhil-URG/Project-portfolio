@@ -1,0 +1,49 @@
+---
+/**
+ * Robot trajectory strip: a dashed path marching between waypoints.
+ */
+---
+
+<svg
+  class="block h-20 w-full text-ink sm:h-24"
+  viewBox="0 0 1200 96"
+  preserveAspectRatio="xMidYMid meet"
+  role="img"
+  aria-label="Robot trajectory from start to goal via labelled waypoints"
+>
+  <path
+    d="M40 70 L250 70 L400 32 L660 32 L810 64 L1120 64"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.25"
+    stroke-linejoin="round"
+    stroke-dasharray="7 6"
+    class="traj-path"></path>
+
+  <rect x="36" y="66" width="8" height="8" fill="currentColor"></rect>
+  <path d="M1128 64 L1120 60 L1120 68 Z" fill="currentColor"></path>
+
+  <g fill="var(--color-paper)" stroke="currentColor" stroke-width="1.25">
+    <circle cx="250" cy="70" r="4"></circle>
+    <circle cx="400" cy="32" r="4"></circle>
+    <circle cx="660" cy="32" r="4"></circle>
+    <circle cx="810" cy="64" r="4"></circle>
+  </g>
+
+  <g font-family="var(--font-mono)" font-size="10" fill="var(--color-ink-muted)">
+    <text x="40" y="56">P0</text>
+    <text x="243" y="84">P1</text>
+    <text x="393" y="24">P2</text>
+    <text x="653" y="24">P3</text>
+    <text x="803" y="84">P4</text>
+  </g>
+  <text x="1120" y="52" font-family="var(--font-mono)" font-size="10" fill="var(--color-accent)" text-anchor="end">
+    GOAL
+  </text>
+</svg>
+
+<style>
+  .traj-path {
+    animation: dash-march 22s linear infinite;
+  }
+</style>

@@ -1,0 +1,61 @@
+---
+export const prerender = true;
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
+import { getCollection } from "astro:content";
+import { SYSTEMS } from "../../data/systems";
+
+const collectionProjects = (await getCollection("projects")).sort(
+  (a, b) => (a.data.order ?? 99) - (b.data.order ?? 99),
+);
+const systemSlugs = new Set(SYSTEMS.map((s) => s.slug));
+
+const entries = [
+  ...SYSTEMS.map((s, i) => ({
+    id: s.slug,
+    data: {
+      title: s.title,
+      summary: s.what,
+      tags: [...s.tech],
+      year: s.year,
+      status: s.status,
+      order: i,
+    },
+  })),
+  ...collectionProjects
+    .filter((p) => !systemSlugs.has(p.id))
+    .map((p) => ({
+      id: p.id,
+      data: {
+        title: p.data.title,
+        summary: p.data.summary,
+        tags: p.data.tags,
+        year: p.data.year,
+        status: p.data.status,
+        order: (p.data.order ?? 99) + SYSTEMS.length,
+      },
+    })),
+].sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout
+  title="Work"
+  description="Project index — robotics, vision, ML and embedded systems work by Nikhil Ravi."
+>
+  <section data-reveal>
+    <p class="mono-label text-accent">Index</p>
+    <h1 class="mt-5 text-4xl tracking-tight sm:text-display">Work</h1>
+    <p class="mt-5 max-w-prose text-ink-soft">
+      Project log. Featured systems link to full case studies; the remaining
+      entries are working notes that grow as the projects do.
+    </p>
+    <p class="mono-label mt-8 text-ink-muted">
+      {String(entries.length).padStart(2, "0")} entries · featured systems first
+    </p>
+  </section>
+
+  <div class="mt-10 border-b border-line sm:mt-14">
+    {entries.map((entry, i) => <ProjectCard project={entry} index={i + 1} />)}
+  </div>
+</BaseLayout>

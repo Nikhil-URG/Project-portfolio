@@ -1,0 +1,18 @@
+---
+interface Props {
+  index?: string;
+  caption: string;
+}
+
+const { index, caption } = Astro.props;
+---
+
+<figure class="my-10">
+  <div class="border border-line bg-paper-raised/60 p-4 sm:p-6">
+    <slot />
+  </div>
+  <figcaption class="mono-label mt-3 flex flex-wrap gap-x-4 text-ink-muted">
+    {index && <span class="text-accent">Fig. {index}</span>}
+    <span>{caption}</span>
+  </figcaption>
+</figure>

@@ -1,0 +1,55 @@
+---
+---
+
+<svg
+  class="block w-full text-ink"
+  viewBox="0 0 720 210"
+  role="img"
+  aria-label="Observation setup: camera views of the workspace plus joint state, synchronized as the policy input"
+>
+  <defs>
+    <marker id="co-arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0 0L7 3.5L0 7" fill="var(--color-ink-muted)"></path>
+    </marker>
+  </defs>
+
+  <rect x="30" y="36" width="240" height="120" fill="var(--color-paper-raised)" stroke="var(--color-line-strong)" stroke-width="1"></rect>
+  <rect x="60" y="60" width="180" height="72" fill="none" stroke="var(--color-accent)" stroke-width="1.25" stroke-dasharray="4 3"></rect>
+  <circle cx="150" cy="96" r="4" fill="var(--color-accent)"></circle>
+  <text x="150" y="52" font-family="var(--font-mono)" font-size="9.5" fill="var(--color-accent)" text-anchor="middle">
+    camera view
+  </text>
+  <text x="150" y="140" font-family="var(--font-mono)" font-size="9" fill="var(--color-ink-muted)" text-anchor="middle">
+    camera view of the workspace
+  </text>
+
+  <g stroke="var(--color-ink-muted)" stroke-width="1" fill="none">
+    <line x1="300" y1="96" x2="360" y2="96" marker-end="url(#co-arr)"></line>
+  </g>
+
+  <g>
+    <rect x="380" y="30" width="290" height="56" fill="var(--color-paper)" stroke="var(--color-line-strong)" stroke-width="1"></rect>
+    <text x="394" y="52" font-family="var(--font-mono)" font-size="9.5" fill="var(--color-ink)">
+      obs = [ image Δt−k … Δt | joints | gripper ]
+    </text>
+    <text x="394" y="72" font-family="var(--font-mono)" font-size="9" fill="var(--color-ink-muted)">
+      synchronized, time-aligned — one policy input
+    </text>
+  </g>
+  <g>
+    <rect x="380" y="104" width="290" height="56" fill="var(--color-paper)" stroke="var(--color-line-strong)" stroke-width="1"></rect>
+    <text x="394" y="126" font-family="var(--font-mono)" font-size="9.5" fill="var(--color-ink)">
+      action = [ Δjoints × chunk ]
+    </text>
+    <text x="394" y="146" font-family="var(--font-mono)" font-size="9" fill="var(--color-ink-muted)">
+      ACT predicts several steps ahead at once
+    </text>
+  </g>
+
+  <text x="30" y="26" font-family="var(--font-mono)" font-size="9.5" fill="var(--color-ink-muted)">
+    the observation the policy actually sees
+  </text>
+  <text x="30" y="196" font-family="var(--font-mono)" font-size="9" fill="var(--color-ink-muted)">
+    weak frames in → twitchy actions out; capture rigor is a perception problem
+  </text>
+</svg>

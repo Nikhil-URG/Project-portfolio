@@ -1,0 +1,284 @@
+---
+export const prerender = true;
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Section from "../components/Section.astro";
+import ScanField from "../components/diagrams/ScanField.astro";
+import Trajectory from "../components/diagrams/Trajectory.astro";
+import LabGraph from "../components/home/LabGraph";
+import { SITE, HERO_AREAS, HAS_CV } from "../consts";
+import { SYSTEMS, LAB_AREAS, LAB_CONNECTIONS } from "../data/systems";
+
+const externalLinks = [
+  ...(SITE.links.github ? [{ label: "GitHub", href: SITE.links.github }] : []),
+  ...(SITE.links.linkedin
+    ? [{ label: "LinkedIn", href: SITE.links.linkedin }]
+    : []),
+  ...(HAS_CV ? [{ label: "CV", href: SITE.links.cv }] : []),
+];
+
+const arrowRight = `<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8H13M13 8L8.5 3.5M13 8L8.5 12.5" stroke="currentColor" stroke-width="1.25"></path></svg>`;
+const arrowExternal = `<svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M1 9L9 1M9 1H3.5M9 1V6.5" stroke="currentColor" stroke-width="1.1"></path></svg>`;
+
+const timeline = [
+  {
+    state: "2025 – Present",
+    role: "MSc Autonomous Systems",
+    org: "Hochschule Bonn-Rhein-Sieg",
+    note: "Graduate work across robotics, perception and learning systems. Expected graduation: Fall 2027.",
+  },
+  {
+    state: "May 2026 – Present",
+    role: "Teaching & Research Assistant",
+    org: "Hochschule Bonn-Rhein-Sieg",
+    note: "Designing and delivering practical coursework for the Autonomous Robotics curriculum — ROS 2 and Gazebo labs.",
+  },
+  {
+    state: "Apr 2023 – Feb 2025",
+    role: "IoT Developer & Software Engineer",
+    org: "Flexli Technologies",
+    note: "Real-time telemetry pipelines, AWS + Redis log infrastructure, Python/Go backend services, and embedded work on ESP32, STM32 and Raspberry Pi.",
+  },
+  {
+    state: "Jan 2023 – Mar 2023",
+    role: "Data Analyst Associate",
+    org: "Redwood Algorithms",
+    note: "Automated ETL workflows in Python and built analytical dashboards on PostgreSQL.",
+  },
+  {
+    state: "May 2022 – Nov 2022",
+    role: "Data Engineer Intern",
+    org: "Empower COE",
+    note: "REST API ingestion pipelines and structured datasets for NLP and ML training.",
+  },
+];
+---
+
+<BaseLayout>
+  <!-- 1 · HERO -->
+  <section>
+    <p class="mono-label flex items-center gap-3 text-ink-muted">
+      <span class="inline-block h-1.5 w-1.5 shrink-0 bg-accent [animation:rec-blink_2.2s_ease-in-out_infinite]" aria-hidden="true"></span>
+      {SITE.role}
+    </p>
+
+    <div class="mt-8 grid grid-cols-1 gap-x-10 gap-y-12 md:grid-cols-12">
+      <div class="md:col-span-7">
+        <h1 class="max-w-[18ch] text-display" data-reveal>
+          I build systems that <span class="text-accent">move</span>, <span class="text-accent">perceive</span> and <span class="text-accent">learn</span>.
+        </h1>
+        <p class="mt-6 max-w-prose text-lg text-ink-soft" data-reveal>
+          I'm Nikhil — a robotics and ML engineer keeping an engineering
+          notebook of what I build: SLAM stacks, manipulation policies,
+          transformers and the embedded glue that holds them together.
+        </p>
+        <ul class="mt-8 flex max-w-xl flex-wrap gap-x-6 gap-y-2" data-reveal>
+          {
+            HERO_AREAS.map((area, i) => (
+              <li class="mono-label flex items-baseline gap-2 text-ink-soft">
+                <span class="text-accent">{String(i + 1).padStart(2, "0")}</span>
+                {area}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div class="md:col-span-5" data-reveal>
+        <ScanField />
+      </div>
+    </div>
+
+    <nav aria-label="Primary links" class="mt-14 border-y border-line" data-reveal>
+      <ul class="grid grid-cols-2 sm:flex sm:flex-wrap">
+        <li class="sm:mr-2">
+          <a href="/work" class="mono-label group flex items-center gap-2 py-4 pr-6 text-ink transition-colors hover:text-accent">
+            Projects
+            <span set:html={arrowRight} />
+          </a>
+        </li>
+        {
+          externalLinks.map((link) => (
+            <li>
+              <a href={link.href} class="mono-label flex items-center gap-2 py-4 pr-6 text-ink-soft transition-colors hover:text-accent">
+                {link.label} <span set:html={arrowExternal} />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </section>
+
+  <div class="mt-16 border-y border-line bg-paper-raised/40 sm:mt-20" data-reveal>
+    <div class="mx-auto w-full max-w-(--container-page)">
+      <Trajectory />
+    </div>
+  </div>
+
+  <!-- 2 · CURRENT FOCUS -->
+  <Section index="01" title="Current focus" kicker="In progress" id="focus">
+    <div class="grid grid-cols-1 gap-x-10 gap-y-10 lg:grid-cols-12">
+      <div class="max-w-prose lg:col-span-6">
+        <p class="text-lg text-ink" data-reveal>
+          MSc Autonomous Systems at Hochschule Bonn-Rhein-Sieg.
+        </p>
+        <p class="mt-5 text-ink-soft" data-reveal>
+          My work sits at the intersection of robotics, perception and
+          learning: stacks that map and localize the world, models that
+          interpret it, and policies that act inside it — close enough to the
+          hardware to see them fail.
+        </p>
+      </div>
+      <dl class="lg:col-span-5 lg:col-start-8" data-reveal>
+        {
+          [
+            ["Program", "MSc Autonomous Systems"],
+            ["Institution", "Hochschule Bonn-Rhein-Sieg"],
+            ["Role", "Teaching & Research Assistant"],
+            ["Graduation", "Expected Fall 2027"],
+            ["Base", "Bonn, Germany"],
+          ].map(([label, value]) => (
+            <div class="flex items-baseline justify-between gap-6 border-t border-line py-3 last:border-b">
+              <dt class="mono-label text-ink-muted">{label}</dt>
+              <dd class="mono-data text-right text-ink">{value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </Section>
+
+  <!-- 3 · SELECTED SYSTEMS -->
+  <Section index="02" title="Selected systems" kicker={`${String(SYSTEMS.length).padStart(2, "0")} entries`} id="systems">
+    <div class="border-b border-line">
+      {
+        SYSTEMS.map((sys, i) => (
+          <article class="group relative border-t border-line py-8 sm:py-10">
+            <a href={`/work/${sys.slug}`} class="absolute inset-0" aria-label={`Read more: ${sys.title}`} />
+            <div class="grid gap-x-8 gap-y-4 sm:grid-cols-[3.5rem_1fr] lg:grid-cols-[3.5rem_1fr_14rem]">
+              <span class="mono-label pt-1 text-ink-muted transition-colors duration-200 group-hover:text-accent max-sm:hidden">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <div>
+                <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                  <h3 class="text-xl tracking-tight sm:text-2xl">
+                    <span class="transition-colors duration-200 group-hover:text-accent">{sys.title}</span>
+                  </h3>
+                  <span class="mono-label text-ink-muted">
+                    {sys.year !== "—" && `${sys.year} · `}{sys.status}
+                  </span>
+                </div>
+                <p class="mt-3 max-w-prose text-base text-ink">{sys.what}</p>
+                <p class="mt-3 max-w-prose text-sm text-ink-soft">{sys.problem}</p>
+                <ul class="mt-4 flex flex-wrap gap-1.5">
+                  {sys.tech.map((t) => (
+                    <li class="mono-label inline-flex items-center border border-line-strong/70 px-1.5 py-1 text-ink-soft">
+                      {t}
+                    </li>
+                  ))}
+                </ul>
+                <p class="mt-4 max-w-prose font-serif text-sm italic text-ink-soft">
+                  <span class="mono-label mr-2 not-italic text-accent">Why</span>
+                  {sys.why}
+                </p>
+              </div>
+              <div class="hidden lg:block">
+                <svg class="mt-2 ml-auto h-4 w-4 text-ink-muted opacity-0 transition-all duration-200 group-hover:translate-x-0.5 group-hover:opacity-100" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M2 8H13M13 8L8.5 3.5M13 8L8.5 12.5" stroke="currentColor" stroke-width="1.25" />
+                </svg>
+              </div>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+    <p class="mt-7">
+      <a href="/work" class="mono-label inline-flex items-center gap-2 text-accent transition-colors hover:text-accent-ink">
+        Full index
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M2 8H13M13 8L8.5 3.5M13 8L8.5 12.5" stroke="currentColor" stroke-width="1.25"></path>
+        </svg>
+      </a>
+    </p>
+  </Section>
+
+  <!-- 4 · THE LAB -->
+  <Section index="03" title="The Lab" kicker="Interactive" id="lab">
+    <p class="max-w-prose text-ink-soft" data-reveal>
+      Skills as a system, not a checklist. Six areas, one workbench — the
+      connections between them are the point. Select a node to see the
+      tooling, what feeds it, and where it shows up.
+    </p>
+    <p class="mt-4" data-reveal>
+      <a href="/perception" class="mono-label inline-flex items-center gap-2 text-accent transition-colors hover:text-accent-ink">
+        Perception deep dive — pixels → objects → time
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M2 8H13M13 8L8.5 3.5M13 8L8.5 12.5" stroke="currentColor" stroke-width="1.25"></path>
+        </svg>
+      </a>
+    </p>
+    <div class="mt-10" data-reveal>
+      <LabGraph client:visible areas={LAB_AREAS} connections={LAB_CONNECTIONS} />
+    </div>
+  </Section>
+
+  <!-- 5 · EXPERIENCE -->
+  <Section index="04" title="Experience" kicker="Timeline" id="experience">
+    <ol class="relative ml-2 space-y-10 border-l border-line-strong sm:ml-3" data-reveal>
+      {
+        timeline.map((item, i) => (
+          <li class="relative pl-8 sm:pl-10">
+            <span class="absolute top-1 -left-[5px] h-[9px] w-[9px] border border-ink bg-paper" aria-hidden="true" />
+            {i === 0 && (
+              <span class="absolute top-1 -left-[5px] h-[9px] w-[9px] bg-accent [animation:rec-blink_2.2s_ease-in-out_infinite]" aria-hidden="true" />
+            )}
+            <p class="mono-label text-ink-muted">{item.state}</p>
+            <h3 class="mt-2 text-lg tracking-tight sm:text-xl">
+              {item.role}
+              <span class="mono-label ml-3 align-middle text-ink-soft">{item.org}</span>
+            </h3>
+            <p class="mt-2 max-w-prose text-sm text-ink-soft sm:text-base">{item.note}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </Section>
+
+  <!-- 6 · CONTACT -->
+  <Section index="05" title="Contact" id="contact">
+    <div class="max-w-prose">
+      <p class="text-lg text-ink-soft" data-reveal>
+        Open to research collaborations and engineering roles in robotics and
+        applied ML.
+      </p>
+      <a
+        href={SITE.links.email}
+        class="group mt-6 inline-flex items-baseline gap-3 text-xl tracking-tight sm:text-2xl"
+        data-reveal
+      >
+        <span class="text-accent transition-colors group-hover:text-accent-ink">
+          {SITE.links.email.replace("mailto:", "")}
+        </span>
+        <svg class="transition-transform duration-200 group-hover:translate-x-1" width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M2 8H13M13 8L8.5 3.5M13 8L8.5 12.5" stroke="currentColor" stroke-width="1.25"></path>
+        </svg>
+      </a>
+      {
+        externalLinks.length > 0 && (
+          <ul class="mt-8 flex flex-wrap gap-x-8 gap-y-3 border-t border-line pt-5" data-reveal>
+            {externalLinks.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  class="mono-label flex items-center gap-2 text-ink-soft transition-colors hover:text-accent"
+                >
+                  {link.label} <span set:html={arrowExternal} />
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+  </Section>
+</BaseLayout>

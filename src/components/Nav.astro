@@ -1,0 +1,40 @@
+---
+import { NAV, SITE } from "../consts";
+
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === "/work" ? path.startsWith("/work") : false;
+---
+
+<header class="sticky top-0 z-40 border-b border-line bg-paper">
+  <div
+    class="mx-auto flex w-full max-w-(--container-page) flex-col gap-2 px-5 py-3 sm:h-14 sm:flex-row sm:items-center sm:justify-between sm:gap-0 sm:px-8 sm:py-0"
+  >
+    <a href="/" class="flex items-center gap-3 whitespace-nowrap">
+      <span class="font-display text-sm font-semibold tracking-tight">
+        {SITE.name}
+      </span>
+      <span class="hidden h-3 w-px bg-line-strong lg:block" aria-hidden="true"></span>
+      <span class="mono-label hidden text-ink-muted lg:block" aria-hidden="true">
+        Lab Notebook
+      </span>
+    </a>
+    <nav aria-label="Main navigation">
+      <ul class="flex items-center justify-between gap-4 sm:justify-end sm:gap-8">
+        {
+          NAV.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                aria-current={isActive(item.href) ? "page" : undefined}
+                class="mono-label whitespace-nowrap text-ink-soft transition-colors duration-200 hover:text-accent aria-[current=page]:text-accent"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>

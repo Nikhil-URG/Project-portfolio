@@ -1,0 +1,294 @@
+---
+export const prerender = true;
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Section from "../../components/Section.astro";
+import Tag from "../../components/Tag.astro";
+import Figure from "../../components/Figure.astro";
+import Placeholder from "../../components/casestudy/Placeholder.astro";
+import LeaderFollower from "../../components/casestudy/LeaderFollower.astro";
+import CameraObs from "../../components/casestudy/CameraObs.astro";
+import ExecutionLoop from "../../components/casestudy/ExecutionLoop.astro";
+import DemonstrationFlow from "../../components/casestudy/DemonstrationFlow";
+
+const capabilities = [
+  {
+    n: "01",
+    title: "Learn, don't program",
+    body: "The task is manipulation, and hand-coding grasps or trajectories does not generalize. The policy must come from data.",
+  },
+  {
+    n: "02",
+    title: "From the human side",
+    body: "The demonstration source is a human operator teleoperating the leader arm — not motion planning, not scripted replay.",
+  },
+  {
+    n: "03",
+    title: "End to end on hardware",
+    body: "Camera observations, ACT training, and real execution on the follower arm — not a simulation-only result.",
+  },
+];
+
+const cameraSetup: [string, string][] = [
+  ["Observations", "camera frames + current joint state"],
+  ["Action space", "joint targets, chunked"],
+  ["Teleop", "leader arm → follower mirror"],
+  ["Framework", "LeRobot + PyTorch"],
+];
+
+const results = [
+  {
+    metric: "Demonstration → policy loop",
+    value: "Runs end-to-end on the platform: capture → dataset → ACT training → real execution on the follower.",
+    pending: false,
+  },
+  { metric: "Episodes collected", value: null, note: "count — to be added", pending: true },
+  { metric: "Task success rate", value: null, note: "to be measured", pending: true },
+  { metric: "Policy chunk length / rate", value: null, note: "to be added", pending: true },
+];
+
+const lessons = [
+  "The dataset is the design. If resets, camera views, or episode boundaries are inconsistent, no training recipe fixes it downstream.",
+  "ACT's action chunking is what makes real-time execution tractable — but chunk boundaries are where failures show up first.",
+  "Capture rigor is a perception problem: weak or flickery observations at capture time become incoherent learned behavior at execution time.",
+  "Real-world execution is the only honest evaluation — simulation metrics hide exactly the failures that matter.",
+];
+---
+
+<BaseLayout
+  title="Desk Hero / LeRobot SO101"
+  description="Case study: imitation learning on a LeRobot SO101 arm — leader/follower demonstrations, ACT training, and real-world execution."
+>
+  <article>
+    <header class="max-w-(--container-prose)">
+      <p class="mono-label flex flex-wrap items-center gap-3 text-ink-muted">
+        <a href="/work" class="transition-colors hover:text-accent">Work</a>
+        <span aria-hidden="true">/</span>
+        <span class="text-ink-soft">desk-hero</span>
+      </p>
+      <h1 class="mt-6 text-3xl tracking-tight sm:text-display" data-reveal>
+        Desk Hero / LeRobot SO101
+      </h1>
+      <p class="mt-5 text-lg text-ink-soft" data-reveal>
+        Imitation learning on a physical arm — leader/follower
+        demonstrations, ACT training, and real-world execution for
+        desk-scale manipulation.
+      </p>
+      <div class="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3" data-reveal>
+        <ul class="flex flex-wrap gap-1.5">
+          <li><Tag label="LeRobot" /></li>
+          <li><Tag label="ACT" /></li>
+          <li><Tag label="Imitation learning" /></li>
+          <li><Tag label="PyTorch" /></li>
+        </ul>
+        <p class="mono-label text-ink-muted">experiment log · 2026</p>
+      </div>
+    </header>
+
+    <nav
+      aria-label="Case study resources"
+      class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 border-y border-line py-3.5"
+      data-reveal
+    >
+      <span class="mono-label inline-flex items-center gap-2 border border-dashed border-line-strong px-2.5 py-1.5 text-ink-muted" title="Placeholder — repository link to be added">
+        Repository · — to be published —
+      </span>
+      <span class="mono-label inline-flex items-center gap-2 border border-dashed border-line-strong px-2.5 py-1.5 text-ink-muted" title="Placeholder — demo/video link to be added">
+        Demo / video · — to be published —
+      </span>
+      <a href="https://huggingface.co/docs/lerobot" class="mono-label inline-flex items-center gap-1.5 text-ink-soft transition-colors hover:text-accent">
+        LeRobot docs
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M1 9L9 1M9 1H3.5M9 1V6.5" stroke="currentColor" stroke-width="1.1"></path></svg>
+      </a>
+      <a href="https://arxiv.org/abs/2304.13705" class="mono-label inline-flex items-center gap-1.5 text-ink-soft transition-colors hover:text-accent">
+        ACT paper
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M1 9L9 1M9 1H3.5M9 1V6.5" stroke="currentColor" stroke-width="1.1"></path></svg>
+      </a>
+    </nav>
+
+    <!-- 01 PROBLEM -->
+    <Section index="01" title="Problem" kicker="The brief" id="problem">
+      <div class="max-w-prose">
+        <p class="text-lg text-ink" data-reveal>
+          Teach a low-cost robot arm a desk-scale manipulation task — not by
+          programming it, but by showing it.
+        </p>
+        <p class="mt-4 text-ink-soft" data-reveal>
+          Hand-coding grasps and place motions breaks on every variation in
+          pose, lighting, and object geometry. The alternative is imitation
+          learning: capture what a human does, train a policy on it, and let
+          the robot reproduce it. The interesting engineering is in the
+          seam between the two — where human data becomes robot behavior.
+        </p>
+        <p class="mt-4 font-body text-sm text-ink-soft" data-reveal>
+          Built for the Intrinsic AI Robotics Challenge 2026 and evaluated
+          across multiple task configurations.
+        </p>
+      </div>
+      <ol class="mt-10 grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-3" data-reveal>
+        {
+          capabilities.map((c) => (
+            <li class="flex gap-4 border-t border-line pt-4">
+              <span class="mono-label pt-0.5 text-accent">{c.n}</span>
+              <div>
+                <h3 class="text-base tracking-tight sm:text-lg">{c.title}</h3>
+                <p class="mt-1.5 text-sm text-ink-soft">{c.body}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </Section>
+
+    <!-- 02 SETUP -->
+    <Section index="02" title="Setup" kicker="Leader / follower" id="setup">
+      <div class="grid grid-cols-1 gap-x-10 gap-y-8 lg:grid-cols-12">
+        <div class="max-w-prose lg:col-span-5">
+          <p class="text-ink-soft" data-reveal>
+            Two SO101 arms drive the demonstration loop: the
+            <strong class="text-ink">leader</strong> is the one the operator
+            moves; the <strong class="text-ink">follower</strong> mirrors it.
+            Joint encoders on the leader stream target poses; the follower's
+            motors track them step by step.
+          </p>
+          <p class="mt-4 text-sm text-ink-soft" data-reveal>
+            Teleoperation in joint space keeps demonstrations physically
+            consistent: the same operator motion produces the same follower
+            motion, regardless of how the scene looks.
+          </p>
+          <dl class="mt-8" data-reveal>
+            {
+              cameraSetup.map(([label, value]) => (
+                <div class="flex items-baseline justify-between gap-6 border-t border-line py-3 last:border-b">
+                  <dt class="mono-label shrink-0 text-ink-muted">{label}</dt>
+                  <dd class="mono-data text-right text-ink">{value}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </div>
+        <div class="lg:col-span-7">
+          <Figure index="01" caption="leader/follower teleoperation — the demonstration interface">
+            <LeaderFollower />
+          </Figure>
+        </div>
+      </div>
+    </Section>
+
+    <!-- 03 PIPELINE -->
+    <Section index="03" title="The pipeline" kicker="Demonstration → behavior" id="pipeline">
+      <p class="max-w-prose text-ink-soft" data-reveal>
+        The whole idea in one line: a human demonstrates through the leader
+        arm; the dataset captures it; ACT compresses it into a policy; the
+        follower arm replays it — without the human. Select any stage to
+        inspect it.
+      </p>
+      <div class="mt-10" data-reveal>
+        <DemonstrationFlow client:visible />
+      </div>
+    </Section>
+
+    <!-- 04 DATASET -->
+    <Section index="04" title="Demonstrations & dataset" kicker="Capture discipline" id="dataset">
+      <div class="grid grid-cols-1 gap-x-10 gap-y-8 lg:grid-cols-12">
+        <div class="max-w-prose lg:col-span-5">
+          <p class="text-ink-soft" data-reveal>
+            A demonstration is an episode: reset the scene, perform the task
+            through the leader arm, end the episode. What gets saved is a
+            time-aligned stream — camera frames, joint targets, gripper
+            state — not a video. Episode boundaries are data: resets, first
+            frames, and end conditions all become training signal.
+          </p>
+          <p class="mt-4 text-sm text-ink-soft" data-reveal>
+            Capture discipline lives here: consistent resets, stable camera
+            views, and enough episodes to cover the variation the policy will
+            face at execution time.
+          </p>
+        </div>
+        <div class="lg:col-span-7">
+          <Figure index="03" caption="what the policy sees — the observation the model trains on">
+            <CameraObs />
+          </Figure>
+        </div>
+      </div>
+      <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-line pt-6" data-reveal>
+        <p class="mono-label text-ink-muted">Dataset status</p>
+        <Placeholder label="episode count — to be added" />
+        <Placeholder label="camera views — to be documented" />
+        <Placeholder label="splits — versioned, not yet published" />
+      </div>
+    </Section>
+
+    <!-- 05 TRAINING & EXECUTION -->
+    <Section index="05" title="Training → execution" kicker="ACT · real world" id="training">
+      <div class="grid grid-cols-1 gap-x-10 gap-y-8 lg:grid-cols-12">
+        <div class="max-w-prose lg:col-span-5">
+          <p class="text-ink-soft" data-reveal>
+            ACT is trained as a sequence model over the dataset: observations
+            in, a chunk of future actions out. Training runs in PyTorch on
+            episode-level splits; the checkpoint that executes is the one
+            whose behavior holds on the validation set — not the one with the
+            lowest training loss.
+          </p>
+          <p class="mt-4 text-sm text-ink-soft" data-reveal>
+            At inference the policy runs the same loop the demonstrations
+            followed — observe, predict a chunk, queue it to the follower,
+            observe the result. The only difference is who is driving.
+          </p>
+        </div>
+        <div class="lg:col-span-7">
+          <Figure index="04" caption="real-world execution loop — no operator in it">
+            <ExecutionLoop />
+          </Figure>
+        </div>
+      </div>
+      <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-line pt-6" data-reveal>
+        <p class="mono-label text-ink-muted">Training status</p>
+        <Placeholder label="epochs / batch size — to be added" />
+        <Placeholder label="training curves — to be published" />
+        <Placeholder label="checkpoint — evaluated, not yet released" />
+      </div>
+    </Section>
+
+    <!-- 06 RESULTS -->
+    <Section index="06" title="Results" kicker="qualitative" id="results">
+      <p class="max-w-prose text-ink-soft" data-reveal>
+        Qualitative status first. The measured table gets filled in as
+        benchmarks are run — nothing here is invented.
+      </p>
+      <dl class="mt-8" data-reveal>
+        {
+          results.map((r) => (
+            <div class="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 border-t border-line py-3.5 last:border-b">
+              <dt class="mono-label w-56 shrink-0 text-ink-muted">{r.metric}</dt>
+              {r.pending ? (
+                <dd>
+                  <Placeholder label={r.note ?? "pending"} />
+                </dd>
+              ) : (
+                <dd class="mono-data max-w-prose text-ink">{r.value}</dd>
+              )}
+            </div>
+          ))
+        }
+      </dl>
+      <p class="mt-5" data-reveal>
+        <Placeholder label="execution clips — to be added" />
+      </p>
+    </Section>
+
+    <!-- 07 LESSONS -->
+    <Section index="07" title="Lessons" kicker="notebook margins" id="lessons">
+      <ol class="grid max-w-prose gap-6" data-reveal>
+        {
+          lessons.map((lesson, i) => (
+            <li class="flex gap-4 border-t border-line pt-4">
+              <span class="mono-label pt-1 text-accent">{String(i + 1).padStart(2, "0")}</span>
+              <p class="font-body text-base text-ink-soft">{lesson}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </Section>
+  </article>
+</BaseLayout>

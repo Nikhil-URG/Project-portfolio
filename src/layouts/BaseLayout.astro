@@ -19,13 +19,23 @@ const pageTitle = title
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#f6f4ee" />
+    <meta name="theme-color" content="#16150f" />
+    <script is:inline>
+      try {
+        if (localStorage.getItem("theme") === "light") {
+          document.documentElement.dataset.theme = "light";
+          document
+            .querySelector('meta[name="theme-color"]')
+            ?.setAttribute("content", "#f6f4ee");
+        }
+      } catch {}
+    </script>
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta property="og:title" content={pageTitle} />
@@ -78,5 +88,37 @@ const pageTitle = title
         );
         els.forEach((el) => io.observe(el));
       }
-    </script>  </body>
+    </script>
+
+    <script>
+      const root = document.documentElement;
+      const toggles = document.querySelectorAll("[data-theme-toggle]");
+      const meta = document.querySelector('meta[name="theme-color"]');
+      const isLight = () => root.dataset.theme === "light";
+
+      const sync = () => {
+        const light = isLight();
+        toggles.forEach((btn) => {
+          btn.setAttribute(
+            "aria-label",
+            light ? "Switch to dark theme" : "Switch to light theme",
+          );
+          btn.setAttribute("aria-pressed", String(light));
+        });
+        meta?.setAttribute("content", light ? "#f6f4ee" : "#16150f");
+      };
+
+      toggles.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          root.dataset.theme = isLight() ? "dark" : "light";
+          try {
+            localStorage.setItem("theme", root.dataset.theme);
+          } catch {}
+          sync();
+        });
+      });
+
+      sync();
+    </script>
+  </body>
 </html>

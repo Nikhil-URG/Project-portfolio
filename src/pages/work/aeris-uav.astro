@@ -1,0 +1,555 @@
+---
+export const prerender = true;
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Section from "../../components/Section.astro";
+import Tag from "../../components/Tag.astro";
+import Figure from "../../components/Figure.astro";
+import AerisVideo from "../../components/AerisVideo.astro";
+import AerisStack from "../../components/casestudy/AerisStack.astro";
+import FlightLoop from "../../components/casestudy/FlightLoop.astro";
+import TargetDetection from "../../components/casestudy/TargetDetection.astro";
+import LidarReplan from "../../components/casestudy/LidarReplan.astro";
+import CityGrid from "../../components/casestudy/CityGrid.astro";
+
+const capabilities = [
+  {
+    n: "01",
+    title: "Fly the vehicle",
+    body: "Arm, take off, hold, transit, return and land through a 20 Hz offboard stream while PX4 keeps the stabilization loops.",
+  },
+  {
+    n: "02",
+    title: "Run the mission",
+    body: "YAML waypoints with altitude and geofence validation, inspection holds, RTL, and a structured record of every transition.",
+  },
+  {
+    n: "03",
+    title: "See and avoid",
+    body: "A downward camera finds red inspection panels; a 270° lidar checks the forward corridor and triggers a lateral replan.",
+  },
+  {
+    n: "04",
+    title: "Fail safely",
+    body: "An independent supervisor watches pose, battery, geofence and mission heartbeat, with injectable faults and deterministic actions.",
+  },
+];
+
+const stack = [
+  ["Flight stack", "PX4 v1.17.0 · px4_msgs v1.17.0"],
+  ["Autonomy", "ROS 2 Jazzy · C++ / Python"],
+  ["Simulation", "Gazebo Harmonic 8.15.0"],
+  ["DDS bridge", "Micro XRCE-DDS Agent v2.4.3"],
+  ["Ground station", "QGroundControl v5.1.5"],
+];
+
+const missionSpec = `mission:
+  name: inspection_alpha
+  frame: local_ned
+  defaults:
+    cruise_altitude_m: 5.0
+    max_speed_mps: 1.5
+    waypoint_tolerance_m: 0.4
+  waypoints:
+    - id: wp_01
+      x: 4.0
+      y: 0.0
+      z: -5.0
+      hold_s: 3.0
+      action: inspect
+    - id: wp_02
+      x: 4.0
+      y: 4.0
+      z: -5.0
+      hold_s: 3.0
+      action: inspect
+  return_to_launch: true
+  land_on_complete: true`;
+
+const missionEvents = [
+  "waypoint_reached",
+  "target_detected",
+  "obstacle_detected",
+  "replan",
+  "safety_abort",
+  "mission_complete",
+];
+
+const faults = [
+  { fault: "stale_pose", action: "land", latency: "98 ms", outcome: "LAND → DONE" },
+  { fault: "low_battery", action: "rtl", latency: "78 ms", outcome: "RTL → landed" },
+  { fault: "geofence_breach", action: "rtl", latency: "44 ms", outcome: "RTL → landed" },
+  { fault: "mission_heartbeat_loss", action: "rtl", latency: "41 ms", outcome: "RTL → landed" },
+];
+
+const results = [
+  {
+    metric: "Mission scenarios",
+    value: "8 recorded runs · 4 completed · 4 planned safety aborts",
+  },
+  {
+    metric: "Nominal mission",
+    value: "2/2 waypoints · 33.77 s · COMPLETE, disarmed",
+  },
+  {
+    metric: "Perception",
+    value: "2/2 detections · confidence 1.00 · slant range 6.27 / 6.28 m",
+  },
+  {
+    metric: "Obstacle avoidance",
+    value: "3.75 m obstacle · 1 lateral replan · original waypoint reached",
+  },
+  {
+    metric: "Safety campaign",
+    value: "4/4 injected faults → correct land/RTL · 41–98 ms to dispatch",
+  },
+  {
+    metric: "City grid",
+    value: "3/3 SITL missions · 2.269 m minimum clearance · 0 building intrusions",
+  },
+  {
+    metric: "Quality gates",
+    value: "42 ROS tests + 4 evaluator tests · 20 environment checks · 10 packages",
+  },
+];
+
+const lessons = [
+  "The autopilot boundary is a feature. Keeping actuator authority in PX4 made the autonomy layer safe to fail and testable on its own.",
+  "A heartbeat is a contract. Offboard mode, mission status and safety supervision all depend on liveness — stale telemetry is invalid, never zero.",
+  "Evidence compounds. Every run writes JSONL; the evaluator turns those logs into the results table. The difference between a demo and a benchmark is a schema.",
+  "Test the failure path first. Fault injection proved that choosing the right action was not enough — the mission manager also had to stop sequencing.",
+  "Simulation narrows the gap; it does not close it. SITL is reproducible and cheap, but hardware, sensor noise and calibrated extrinsics remain open.",
+];
+---
+
+<BaseLayout
+  title="AERIS — UAV Inspection & Reliability"
+  description="Case study: AERIS, a simulated industrial-inspection UAV built on PX4, ROS 2 Jazzy and Gazebo Harmonic — mission autonomy, camera perception, lidar avoidance, safety supervision and A* city-grid planning."
+>
+  <article>
+    <header class="max-w-(--container-prose)">
+      <p class="mono-label flex flex-wrap items-center gap-3 text-ink-muted">
+        <a href="/work" class="transition-colors hover:text-accent">Work</a>
+        <span aria-hidden="true">/</span>
+        <span class="text-ink-soft">aeris-uav</span>
+      </p>
+      <h1 class="mt-6 text-3xl tracking-tight sm:text-display" data-reveal>AERIS</h1>
+      <p class="mono-label mt-3 text-accent" data-reveal>
+        Autonomous UAV inspection & reliability system
+      </p>
+      <p class="mt-5 text-lg text-ink-soft" data-reveal>
+        A simulated industrial-inspection drone built on PX4, ROS 2 Jazzy and
+        Gazebo Harmonic — mission autonomy, camera perception, lidar obstacle
+        avoidance, safety supervision and a click-to-fly city-grid planner.
+      </p>
+      <div class="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3" data-reveal>
+        <ul class="flex flex-wrap gap-1.5">
+          <li><Tag label="PX4" /></li>
+          <li><Tag label="ROS 2 Jazzy" /></li>
+          <li><Tag label="Gazebo Harmonic" /></li>
+          <li><Tag label="OpenCV" /></li>
+          <li><Tag label="A*" /></li>
+          <li><Tag label="C++ / Python" /></li>
+          <li><Tag label="PyQt5" /></li>
+        </ul>
+        <p class="mono-label text-ink-muted">case study · 2026 · simulation</p>
+      </div>
+    </header>
+
+    <nav
+      aria-label="Case study resources"
+      class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 border-y border-line py-3.5"
+      data-reveal
+    >
+      <a href="https://github.com/Nikhil-URG/aeris-uav" class="mono-label inline-flex items-center gap-1.5 text-ink-soft transition-colors hover:text-accent">
+        Repository
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M1 9L9 1M9 1H3.5M9 1V6.5" stroke="currentColor" stroke-width="1.1"></path></svg>
+      </a>
+      <a href="https://github.com/Nikhil-URG/aeris-uav/blob/main/docs/evaluation.md" class="mono-label inline-flex items-center gap-1.5 text-ink-soft transition-colors hover:text-accent">
+        Evaluation report
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M1 9L9 1M9 1H3.5M9 1V6.5" stroke="currentColor" stroke-width="1.1"></path></svg>
+      </a>
+      <a href="https://github.com/Nikhil-URG/aeris-uav/blob/main/docs/architecture.md" class="mono-label inline-flex items-center gap-1.5 text-ink-soft transition-colors hover:text-accent">
+        Architecture notes
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M1 9L9 1M9 1H3.5M9 1V6.5" stroke="currentColor" stroke-width="1.1"></path></svg>
+      </a>
+    </nav>
+
+    <AerisVideo
+      src="/aeris/demo.mp4"
+      poster="/aeris/demo-poster.jpg"
+      caption="Click-to-fly city-grid mission — SITL screen recording (2:20): GUI, Gazebo and the full stack"
+    />
+
+    <!-- 01 PROBLEM -->
+    <Section index="01" title="Problem" kicker="The brief" id="problem">
+      <div class="max-w-prose">
+        <p class="text-lg text-ink" data-reveal>
+          A demo can make a drone fly once. An inspection system has to fly a
+          mission, see what it was sent to see, avoid what is in the way, and
+          fail safely when something goes wrong — reproducibly.
+        </p>
+        <p class="mt-4 text-ink-soft" data-reveal>
+          AERIS is a simulated industrial-inspection UAV built to make that
+          whole chain explicit. It is not a collection of demo scripts: the
+          flight stack is pinned, flight control is separated from mission
+          autonomy, every run writes structured logs, and every layer has a
+          scripted acceptance test.
+        </p>
+      </div>
+      <ol class="mt-10 grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2" data-reveal>
+        {
+          capabilities.map((c) => (
+            <li class="flex gap-4 border-t border-line pt-4">
+              <span class="mono-label pt-0.5 text-accent">{c.n}</span>
+              <div>
+                <h3 class="text-base tracking-tight sm:text-lg">{c.title}</h3>
+                <p class="mt-1.5 text-sm text-ink-soft">{c.body}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </Section>
+
+    <!-- 02 ARCHITECTURE -->
+    <Section index="02" title="Architecture" kicker="Three runtimes, one boundary" id="architecture">
+      <div class="max-w-prose">
+        <p class="text-ink-soft" data-reveal>
+          AERIS separates simulation, flight control and mission autonomy.
+          PX4 remains the only component that commands actuators; ROS 2 owns
+          mission state, planning, perception and safety, and talks to PX4
+          over uXRCE-DDS using typed <code class="mono-data bg-paper-raised px-1 py-0.5 text-ink">px4_msgs</code> topics.
+        </p>
+        <p class="mt-4 text-sm text-ink-soft" data-reveal>
+          Latency-sensitive loops stay in C++; mission logic and perception
+          iterate in Python; the city-grid GUI is PyQt5. The boundary is a
+          topic or a service, so each side can be built and tested on its own.
+        </p>
+      </div>
+
+      <div class="mt-8" data-reveal>
+        <Figure index="01" caption="runtime boundaries — PX4 owns stabilization, ROS 2 owns intent, Gazebo owns the world">
+          <AerisStack />
+        </Figure>
+      </div>
+
+      <div class="grid grid-cols-1 gap-x-10 gap-y-8 lg:grid-cols-12">
+        <div class="max-w-prose lg:col-span-7">
+          <p class="border-l-2 border-accent pl-4 font-body text-sm text-ink-soft" data-reveal>
+            No AERIS node publishes actuator commands. The flight-control
+            package is the only path to the motors, which keeps the autonomy
+            layer replaceable — and safe to fail.
+          </p>
+        </div>
+        <dl class="lg:col-span-5" data-reveal>
+          {
+            stack.map(([label, value]) => (
+              <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-t border-line py-2.5 last:border-b">
+                <dt class="mono-label text-ink-muted">{label}</dt>
+                <dd class="mono-data text-right text-ink-soft">{value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </Section>
+
+    <!-- 03 FLIGHT CONTROL -->
+    <Section index="03" title="Flight control" kicker="20 Hz · offboard" id="flight-control">
+      <div class="max-w-prose">
+        <p class="text-ink-soft" data-reveal>
+          <code class="mono-data bg-paper-raised px-1 py-0.5 text-ink">aeris_flight_control</code>
+          is the only bridge to PX4. It prestreams a heartbeat, requests
+          offboard mode, arms only after an ACK, ramps to a 5 m cruise
+          altitude, then accepts goals and returns or lands on command.
+        </p>
+        <p class="mt-4 text-sm text-ink-soft" data-reveal>
+          The setpoint stream runs at 20 Hz. PX4's offboard-loss timeout is
+          one second, so a stalled stream is a designed failure: the
+          autopilot leaves offboard instead of trusting a frozen target.
+          Frames are converted at the boundary — PX4 speaks NED/FRD, ROS
+          2 speaks ENU/FLU.
+        </p>
+        <p class="mt-4 text-sm text-ink-soft" data-reveal>
+          The controller never writes motor outputs. It publishes position
+          setpoints and high-level vehicle commands; PX4 owns EKF2, the
+          position loop, the attitude loop and the actuators.
+        </p>
+      </div>
+      <div class="mt-8" data-reveal>
+        <Figure index="02" caption="offboard state machine — startup, mission and return">
+          <FlightLoop />
+        </Figure>
+      </div>
+    </Section>
+
+    <!-- 04 MISSION AUTONOMY -->
+    <Section index="04" title="Mission autonomy" kicker="YAML → JSONL" id="mission">
+      <div class="grid grid-cols-1 gap-x-10 gap-y-8 lg:grid-cols-12">
+        <div class="max-w-prose lg:col-span-5">
+          <p class="text-ink-soft" data-reveal>
+            A mission is a validated YAML file, not a hard-coded sequence.
+            Altitude, speed, waypoint tolerance and geofence are checked
+            before takeoff; the manager then sequences waypoints, holds for
+            inspection, and commands RTL and landing on completion.
+          </p>
+          <p class="mt-4 text-sm text-ink-soft" data-reveal>
+            Every transition, detection, replan and abort is appended to a
+            JSONL log. An evaluator reconstructs mission duration, phase
+            timings, detection counts, obstacle events and safety outcomes
+            from those logs — so the results table is generated from run
+            artifacts, not retyped.
+          </p>
+          <p class="mt-4 text-sm text-ink-soft" data-reveal>
+            If the safety supervisor reports an armed unsafe state, the
+            mission manager stops sequencing and records a
+            <code class="mono-data bg-paper-raised px-1 py-0.5 text-ink">safety_abort</code>.
+          </p>
+        </div>
+        <div class="lg:col-span-7">
+          <div data-reveal>
+            <pre class="overflow-x-auto border border-line bg-paper-raised p-4 mono-data text-ink-soft">{missionSpec}</pre>
+            <p class="mono-label mt-3 flex flex-wrap gap-x-4 text-ink-muted">
+              <span class="text-accent">Mission file</span>
+              <span>excerpt — validated before takeoff</span>
+            </p>
+            <ul class="mt-5 flex flex-wrap gap-1.5" data-reveal>
+              {missionEvents.map((event) => (
+                <li class="mono-label inline-flex items-center border border-line-strong/70 px-1.5 py-1 text-ink-soft">
+                  {event}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </Section>
+
+    <!-- 05 PERCEPTION -->
+    <Section index="05" title="Perception" kicker="Camera → detections" id="perception">
+      <div class="grid grid-cols-1 gap-x-10 gap-y-8 lg:grid-cols-12">
+        <div class="max-w-prose lg:col-span-7">
+          <p class="text-ink-soft" data-reveal>
+            Inspection starts with a downward-facing monocular camera on the
+            X500. The detector is deliberately classical: BGR → HSV, two red
+            hue bands, a morphological open, then external contours. The
+            largest candidate becomes a detection with a bounding box,
+            bearing, slant range and an approximate local-NED ground point.
+          </p>
+          <p class="mt-4 text-sm text-ink-soft" data-reveal>
+            No neural network is needed for the first target. Both inspection
+            waypoints detected their panel at confidence 1.00, at slant
+            ranges of 6.27 m and 6.28 m.
+          </p>
+        </div>
+        <dl class="lg:col-span-5" data-reveal>
+          {
+            [
+              ["Camera", "downward mono · 1280 × 960"],
+              ["Rate", "~12.8 Hz · FOV 1.74 rad"],
+              ["Detector", "HSV red threshold + contours"],
+              ["Output", "bbox · bearing · range · NED"],
+              ["Inspection run", "2/2 · confidence 1.00"],
+            ].map(([label, value]) => (
+              <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-t border-line py-2.5 last:border-b">
+                <dt class="mono-label text-ink-muted">{label}</dt>
+                <dd class="mono-data text-right text-ink-soft">{value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+      <div class="mt-8" data-reveal>
+        <Figure index="03" caption="downward camera → detection → approximate ground projection">
+          <TargetDetection />
+        </Figure>
+      </div>
+      <p class="mono-label mt-4 text-ink-muted" data-reveal>
+        Detection is robust; metric localization is not claimed. The
+        projection assumes a nadir camera and square pixels.
+      </p>
+    </Section>
+
+    <!-- 06 OBSTACLE AVOIDANCE -->
+    <Section index="06" title="Obstacle avoidance" kicker="270° lidar · reactive" id="avoidance">
+      <div class="max-w-prose">
+        <p class="text-ink-soft" data-reveal>
+          A 2D lidar sweeps 270° at roughly 30 Hz. The navigation node
+          reduces the scan into 10° sectors and reports the closest
+          obstacles; the mission manager checks every sector within ±30° of
+          the current waypoint bearing.
+        </p>
+        <p class="mt-4 text-sm text-ink-soft" data-reveal>
+          If the corridor closes inside 4 m, the manager logs the obstacle
+          and flies a lateral detour 2.5 m opposite it at the path midpoint,
+          then resumes the original waypoint. In the recorded run the
+          obstacle appeared at 3.75 m and bearing −0.204 rad; one replan
+          reached the detour at (1.54, 1.94, −5.0) and the original
+          waypoint was still reached, about 1.9 s later.
+        </p>
+        <p class="mt-4 text-sm text-ink-soft" data-reveal>
+          This is intentionally a local, single-detour policy — not a global
+          planner. It is small enough to test, and honest about what a 2D
+          scan at one altitude can see.
+        </p>
+      </div>
+      <div class="mt-8" data-reveal>
+        <Figure index="04" caption="forward corridor, obstacle detection and lateral detour (schematic)">
+          <LidarReplan />
+        </Figure>
+      </div>
+    </Section>
+
+    <!-- 07 SAFETY -->
+    <Section index="07" title="Safety supervision" kicker="Independent layer" id="safety">
+      <div class="max-w-prose">
+        <p class="text-ink-soft" data-reveal>
+          <code class="mono-data bg-paper-raised px-1 py-0.5 text-ink">aeris_safety</code>
+          watches pose validity, battery, geofence and the mission heartbeat.
+          It publishes status at 10 Hz and commands land, RTL or hold through
+          the same flight-control services as every other node — it never
+          publishes PX4 topics itself.
+        </p>
+        <p class="mt-4 text-sm text-ink-soft" data-reveal>
+          Faults are injectable through a service and mapped to deterministic
+          actions: stale pose lands, low battery returns, a geofence breach
+          returns, and a lost mission heartbeat returns. All four campaigns
+          produced the correct action and a disarmed vehicle; dispatch latency
+          ranged from 41 to 98 ms. These are layers above PX4's own failsafes,
+          not a replacement for them.
+        </p>
+      </div>
+
+      <div class="mt-8" data-reveal>
+        <div class="hidden gap-x-4 gap-y-2 border-b border-line pb-2 sm:grid sm:grid-cols-[1.5fr_0.6fr_0.7fr_1fr]">
+          <span class="mono-label text-ink-muted">Injected fault</span>
+          <span class="mono-label text-ink-muted">Action</span>
+          <span class="mono-label text-ink-muted">Dispatch</span>
+          <span class="mono-label text-ink-muted">Flight outcome</span>
+        </div>
+        {
+          faults.map((f) => (
+            <div class="grid grid-cols-1 gap-x-4 gap-y-1 border-b border-line py-3 sm:grid-cols-[1.5fr_0.6fr_0.7fr_1fr]">
+              <span class="mono-data text-ink">{f.fault}</span>
+              <span class="mono-data text-accent-ink">
+                <span class="mono-label mr-2 text-ink-muted sm:hidden">Action</span>
+                {f.action}
+              </span>
+              <span class="mono-data text-ink-soft">
+                <span class="mono-label mr-2 text-ink-muted sm:hidden">Dispatch</span>
+                {f.latency}
+              </span>
+              <span class="mono-data text-ink-soft">
+                <span class="mono-label mr-2 text-ink-muted sm:hidden">Outcome</span>
+                {f.outcome}
+              </span>
+            </div>
+          ))
+        }
+      </div>
+      <p class="mono-label mt-4 max-w-prose text-ink-muted" data-reveal>
+        Nominal run: COMPLETE in 55.09 s · 4/4 injected faults safe · 11/11
+        safety-evaluator tests passing at that milestone.
+      </p>
+    </Section>
+
+    <!-- 08 CITY GRID -->
+    <Section index="08" title="City-grid navigation" kicker="Click-to-fly · A*" id="city-grid">
+      <div class="max-w-prose">
+        <p class="text-ink-soft" data-reveal>
+          The grid extension puts a city under the drone: 11 × 11 cells at
+          4 m each, with nine 2 × 2 buildings on a regular lattice — 36
+          occupied cells, 85 free. The drone starts at (0,0), cruises at 5 m,
+          and routes around the blocks because every roof is taller than the
+          flight altitude.
+        </p>
+        <p class="mt-4 text-sm text-ink-soft" data-reveal>
+          A* uses 8-connected moves, a Euclidean heuristic and explicit
+          corner-cutting checks. A PyQt5 GUI turns any free cell into a goal;
+          the drone plans, takes off, follows the path, holds for 3 s, plans
+          the return path and lands. Repeated goals work without restarting
+          the stack, and a ROS service exposes the same behavior headlessly.
+        </p>
+      </div>
+
+      <div class="mt-8" data-reveal>
+        <Figure index="05" caption="default city grid — 20-cell A* route from (0,0) to (10,10)">
+          <CityGrid />
+        </Figure>
+      </div>
+
+      <div class="grid grid-cols-1 gap-x-10 gap-y-6 lg:grid-cols-12">
+        <div class="max-w-prose lg:col-span-7">
+          <p class="text-sm text-ink-soft" data-reveal>
+            The dense validation map completed 3/3 SITL missions with a
+            minimum building clearance of 2.269 m, 131 logged positions
+            checked and zero positions inside a building. The default
+            spread-out map was planner-validated separately: 5/5 free paths,
+            worst clearance 2.500 m.
+          </p>
+        </div>
+        <p class="mono-label lg:col-span-5 lg:text-right text-ink-muted" data-reveal>
+          <code class="mono-data bg-paper-raised px-1 py-0.5 text-ink">/aeris_grid_navigation/set_goal</code>
+          <br />
+          <span class="mt-2 inline-block">x, y → accepted · path · length</span>
+        </p>
+      </div>
+    </Section>
+
+    <!-- 09 VERIFICATION -->
+    <Section index="09" title="Verification" kicker="From logs, not memory" id="verification">
+      <div class="max-w-prose">
+        <p class="text-ink-soft" data-reveal>
+          The evaluation uses the authoritative Week 3–6 mission logs rather
+          than a single cherry-picked demo: eight recorded runs, four
+          completed missions and four planned safety aborts. The numbers
+          below come from that evidence set.
+        </p>
+      </div>
+
+      <dl class="mt-8" data-reveal>
+        {
+          results.map((r) => (
+            <div class="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 border-t border-line py-3.5 last:border-b">
+              <dt class="mono-label w-56 shrink-0 text-ink-muted">{r.metric}</dt>
+              <dd class="mono-data max-w-prose text-ink">{r.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      <div class="mt-8 border border-line bg-paper-raised/50 p-5" data-reveal>
+        <p class="mono-label text-accent">Scope</p>
+        <p class="mt-2 max-w-prose text-sm text-ink-soft">
+          All evidence is SITL — no hardware flight is claimed. The runs are
+          representative, not a Monte Carlo study; faults are injected at the
+          ROS supervision layer; perception localization is approximate; the
+          city grid is static and 2D. These limitations are documented in the
+          repository instead of hidden behind the demo.
+        </p>
+        <a
+          href="https://github.com/Nikhil-URG/aeris-uav/blob/main/docs/evaluation.md"
+          class="mono-label mt-4 inline-flex items-center gap-1.5 text-accent transition-colors hover:text-accent-ink"
+        >
+          Read the full evaluation
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M1 9L9 1M9 1H3.5M9 1V6.5" stroke="currentColor" stroke-width="1.1"></path></svg>
+        </a>
+      </div>
+    </Section>
+
+    <!-- 10 LESSONS -->
+    <Section index="10" title="Lessons" kicker="notebook margins" id="lessons">
+      <ol class="grid max-w-prose gap-6" data-reveal>
+        {
+          lessons.map((lesson, i) => (
+            <li class="flex gap-4 border-t border-line pt-4">
+              <span class="mono-label pt-1 text-accent">{String(i + 1).padStart(2, "0")}</span>
+              <p class="font-body text-base text-ink-soft">{lesson}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </Section>
+  </article>
+</BaseLayout>

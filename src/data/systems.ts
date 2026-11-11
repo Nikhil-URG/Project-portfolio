@@ -11,6 +11,17 @@ export interface SystemEntry {
 
 export const SYSTEMS: readonly SystemEntry[] = [
   {
+    slug: "aeris-uav",
+    title: "AERIS — UAV Inspection & Reliability",
+    year: "2026",
+    status: "active",
+    what: "A simulated industrial-inspection UAV built on PX4, ROS 2 Jazzy and Gazebo Harmonic — mission autonomy, camera perception, lidar obstacle avoidance, safety supervision and A* city-grid planning.",
+    problem:
+      "An inspection drone has to do more than fly: it must follow a mission, detect targets, avoid obstacles, fail safely, and prove it with reproducible evidence. AERIS builds that stack end-to-end in simulation.",
+    tech: ["PX4", "ROS 2 Jazzy", "Gazebo Harmonic", "C++ / Python", "OpenCV", "A*", "PyQt5"],
+    why: "It is the full flight-autonomy loop with explicit boundaries: PX4 owns stabilization, ROS 2 owns intent, and every claim is backed by a logged SITL run.",
+  },
+  {
     slug: "robile-amr",
     title: "Robile AMR",
     year: "2025",
@@ -89,6 +100,7 @@ export const LAB_AREAS: readonly LabArea[] = [
     blurb: "Autonomy from the ground up — mapping, localization, planning, and the control loop that ties them together.",
     skills: ["ROS 2", "SLAM", "Navigation", "Localization", "Planning", "Control"],
     projects: [
+      { label: "AERIS — UAV autonomy (PX4 + ROS 2)", href: "/work/aeris-uav" },
       { label: "Robile AMR — full autonomy stack", href: "/work/robile-amr" },
       { label: "Toyota HSR — perception & navigation", href: "/work/toyota-hsr" },
       { label: "Warehouse robotics — Flexli", href: null },
@@ -101,6 +113,7 @@ export const LAB_AREAS: readonly LabArea[] = [
     blurb: "Turning sensor streams into a usable model of the world — and keeping the pipeline honest under real data.",
     skills: ["Computer Vision", "OpenCV", "PyTorch", "Segmentation", "Tracking"],
     projects: [
+      { label: "AERIS — camera target detection", href: "/work/aeris-uav" },
       { label: "Robile AMR — SLAM & localization", href: "/work/robile-amr" },
       { label: "Toyota HSR — object detection", href: "/work/toyota-hsr" },
       { label: "Perception deep dive — pixels → objects → time", href: "/perception" },

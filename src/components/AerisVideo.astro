@@ -1,0 +1,29 @@
+---
+interface Props {
+  src: string;
+  poster: string;
+  caption: string;
+}
+
+const { src, poster, caption } = Astro.props;
+---
+
+<figure class="mt-10">
+  <div class="border border-line bg-paper-raised/60 p-2 sm:p-3">
+    <video
+      class="block w-full bg-ink/5"
+      controls
+      preload="metadata"
+      playsinline
+      poster={poster}
+      aria-label={caption}
+    >
+      <source src={src} type="video/mp4" />
+      Your browser does not support the video element.
+    </video>
+  </div>
+  <figcaption class="mono-label mt-3 flex flex-wrap gap-x-4 text-ink-muted">
+    <span class="text-accent">Video</span>
+    <span>{caption}</span>
+  </figcaption>
+</figure>

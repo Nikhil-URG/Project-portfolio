@@ -1,0 +1,97 @@
+---
+---
+
+<div class="blueprint overflow-x-auto border border-line-strong/80">
+  <svg
+    class="block w-full min-w-[640px] text-ink"
+    viewBox="0 0 760 300"
+    role="img"
+    aria-label="Perception pipeline: downward camera frame with a detected red panel, bearing and slant range, and the approximate ground projection"
+  >
+    <defs>
+      <marker id="td-arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+        <path d="M0 0L7 3.5L0 7" fill="var(--color-accent)"></path>
+      </marker>
+    </defs>
+
+    <text x="20" y="28" font-family="var(--font-mono)" font-size="9" letter-spacing="0.12em" fill="var(--color-ink-muted)">
+      NADIR CAMERA
+    </text>
+    <rect x="20" y="40" width="280" height="170" fill="var(--color-paper)" stroke="var(--color-line-strong)" stroke-width="1"></rect>
+    <rect x="32" y="52" width="256" height="146" fill="var(--color-paper-raised)" stroke="var(--color-line)" stroke-width="1"></rect>
+
+    <g stroke="var(--color-line)" stroke-width="0.75" opacity="0.8">
+      <line x1="117" y1="52" x2="117" y2="198"></line>
+      <line x1="202" y1="52" x2="202" y2="198"></line>
+      <line x1="32" y1="101" x2="288" y2="101"></line>
+      <line x1="32" y1="149" x2="288" y2="149"></line>
+    </g>
+
+    <g stroke="var(--color-ink-muted)" stroke-width="1">
+      <line x1="150" y1="119" x2="170" y2="119"></line>
+      <line x1="160" y1="109" x2="160" y2="129"></line>
+    </g>
+    <text x="150" y="103" font-family="var(--font-mono)" font-size="7.5" fill="var(--color-ink-muted)">
+      nadir
+    </text>
+
+    <rect x="190" y="140" width="50" height="28" fill="var(--color-accent)" opacity="0.85"></rect>
+    <rect x="184" y="134" width="62" height="40" fill="none" stroke="var(--color-accent-ink)" stroke-width="1.25" stroke-dasharray="4 3"></rect>
+    <text x="184" y="126" font-family="var(--font-mono)" font-size="8.5" fill="var(--color-accent-ink)">
+      red-panel · 1.00
+    </text>
+    <text x="32" y="194" font-family="var(--font-mono)" font-size="7.5" fill="var(--color-ink-muted)">
+      1280 × 960 · ~12.8 Hz · bbox → bearing + range
+    </text>
+
+    <g stroke="var(--color-accent)" stroke-width="1" fill="none" marker-end="url(#td-arr)">
+      <line x1="312" y1="125" x2="348" y2="125"></line>
+    </g>
+    <text x="330" y="114" text-anchor="middle" font-family="var(--font-mono)" font-size="8" fill="var(--color-ink-muted)">
+      bearing θ
+    </text>
+    <text x="330" y="143" text-anchor="middle" font-family="var(--font-mono)" font-size="8" fill="var(--color-ink-muted)">
+      slant r
+    </text>
+
+    <text x="400" y="28" font-family="var(--font-mono)" font-size="9" letter-spacing="0.12em" fill="var(--color-ink-muted)">
+      GROUND PROJECTION
+    </text>
+    <line x1="390" y1="210" x2="740" y2="210" stroke="var(--color-line-strong)" stroke-width="1"></line>
+
+    <g stroke="var(--color-ink-muted)" stroke-width="1">
+      <line x1="512" y1="70" x2="528" y2="70"></line>
+      <line x1="520" y1="62" x2="520" y2="78"></line>
+    </g>
+    <line x1="520" y1="78" x2="520" y2="210" stroke="var(--color-line-strong)" stroke-width="1" stroke-dasharray="4 4"></line>
+    <line x1="520" y1="76" x2="648" y2="206" stroke="var(--color-accent)" stroke-width="1.5"></line>
+
+    <path d="M520 112 A36 36 0 0 0 545.5 101.5" fill="none" stroke="var(--color-accent-ink)" stroke-width="1"></path>
+    <text x="536" y="118" font-family="var(--font-mono)" font-size="8.5" fill="var(--color-accent-ink)">
+      θ
+    </text>
+
+    <text x="528" y="150" font-family="var(--font-mono)" font-size="8" fill="var(--color-ink-muted)">
+      5.0 m
+    </text>
+    <text x="592" y="132" font-family="var(--font-mono)" font-size="8.5" fill="var(--color-accent-ink)">
+      r ≈ 6.27 m
+    </text>
+
+    <rect x="640" y="202" width="26" height="8" fill="var(--color-accent)" opacity="0.85"></rect>
+    <text x="653" y="228" text-anchor="middle" font-family="var(--font-mono)" font-size="8" fill="var(--color-ink-muted)">
+      target
+    </text>
+    <text x="400" y="254" font-family="var(--font-mono)" font-size="8" fill="var(--color-ink-muted)">
+      pixel → body-frame offset → local NED (approximate).
+    </text>
+
+    <text x="20" y="284" font-family="var(--font-mono)" font-size="8" fill="var(--color-ink-muted)">
+      HSV threshold → contours → largest candidate → bearing from intrinsics → ground point.
+    </text>
+    <text x="740" y="284" text-anchor="end" font-family="var(--font-mono)" font-size="8" fill="var(--color-accent-ink)">
+      detection robust · metric accuracy approximate
+    </text>
+  </svg>
+</div>
+<p class="mono-label mt-3 text-accent md:hidden">scroll to explore →</p>

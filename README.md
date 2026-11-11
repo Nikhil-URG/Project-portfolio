@@ -9,8 +9,9 @@ SVG diagrams, and animation that communicates data flow rather than decorating.
 ## Overview
 
 - **Static-first Astro site** with server routes only where required (admin CMS).
-- **Case studies** for mobile robotics (ROS 2 navigation stack) and imitation
-  learning (LeRobot SO101 / ACT), plus a perception-focused engineering page.
+- **Case studies** for UAV autonomy (PX4 + ROS 2), mobile robotics (ROS 2
+  navigation stack) and imitation learning (LeRobot SO101 / ACT), plus a
+  perception-focused engineering page.
 - **The Lab** — an interactive graph showing how technical areas feed each
   other (data → learning → perception → robotics, embedded/software → robotics).
 - **Keystatic CMS** at `/admin` for editing project notes and content, backed by
